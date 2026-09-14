@@ -29,5 +29,6 @@
   },
   "devDependencies": {
     "playwright-core": "^1.63.0"
-  }
+  },
+  "license": "SEE LICENSE IN LICENSE"
 }

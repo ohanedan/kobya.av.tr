@@ -57,4 +57,22 @@ builds the site, runs the SEO check and publishes to GitHub Pages at <https://ko
 
 ## License
 
-All rights reserved. The content and branding belong to Kobya Hukuk Bürosu.
+This project uses the [Kobya Attribution License 1.0](LICENSE), with the full text in English and
+Turkish.
+
+- **Pieces are free to reuse.** You may take pieces of this project, however small, and use them in
+  your own, clearly different work for any purpose, including commercial use.
+- **Credit is required.** Credit the project **clearly and visibly**, for example in your site
+  footer, a credits page or your README:
+
+  > Contains work from kobya.av.tr by Vedat Murathan Kobya – https://github.com/ohanedan/kobya.av.tr
+
+  Source files that contain reused code must also keep a short notice comment (see
+  [LICENSE](LICENSE), section 3.2).
+- **Clones are not allowed.** Copying the site as a whole, or cloning its overall design and
+  swapping in your own name and content, requires written permission, even with credit. So does
+  selling or distributing the site as a template or theme.
+- **Some material is not licensed at all:** the Kobya Hukuk Bürosu brand (name, "K" monogram,
+  wordmark, seal), the attorney's personal and professional data, and the firm-specific texts.
+
+Uncredited use and clones are not licensed.

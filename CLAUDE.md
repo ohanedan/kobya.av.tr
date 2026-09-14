@@ -32,6 +32,15 @@ These come from the client or from law. Do not change them without an explicit r
 7. **English for all code, comments and documentation.** Conversation with the maintainer happens in
    Turkish, but the repo is English. Only the page copy in `src/i18n/content.ts` is bilingual.
 8. **Single page.** Do not split into sub-pages unless asked (see "Open items").
+9. **Licensing.** The repo is public under the custom, bilingual **Kobya Attribution License 1.0**
+   (`LICENSE`). It is source-available rather than OSI open source. The **licensor and copyright
+   holder is Av. Vedat Murathan Kobya**, not the maintainer. Attribution notices name the attorney.
+   - Parts may be reused, with visible credit and a source notice, in clearly different work.
+   - Substantial copies are forbidden without written permission. This covers the whole site, a
+     look-alike clone with names or content swapped, and resale as a template or theme.
+   - It excludes the brand, the attorney's personal and professional data, and the firm-specific copy.
+   - Do not replace it with a standard license, or change its terms, without an explicit request.
+   - Keep third-party code and assets under their own licenses.
 
 ## Stack
 
@@ -88,6 +97,7 @@ scripts/
   validate-seo.mjs        CI gate for SEO invariants
   smoke-test.mjs          interaction checks (nav, accordion, language switch, map, mobile menu, no-JS)
 .github/workflows/deploy.yml   build → check:seo → deploy to GitHub Pages
+LICENSE                   Kobya Attribution License 1.0 (English + Turkish; Turkish prevails)
 ```
 
 ## Editing content
@@ -313,6 +323,30 @@ Before calling a change done:
     runs at `ohanedan.github.io/kobya.av.tr/` as `noindex`.
   - It switches to the domain automatically once the custom domain is set in the Pages settings.
   - `CNAME` and `robots.txt` moved from `public/` to build-time generation.
+- **2026-09-15, license:**
+  - The repo is going public. The maintainer wanted anyone to be free to reuse any part, however
+    small, but only with clear, visible credit, and to be able to act against uncredited use.
+  - No standard license fits:
+    - MIT and Apache only require notices kept in the source, not visible credit.
+    - CPAL requires visible credit but is copyleft.
+  - So `LICENSE` is a custom bilingual attribution license:
+    - Reuse of parts is allowed for any purpose, including commercial use.
+    - A "no wholesale copying" clause forbids substantial copies. This covers reproducing the site as
+      a whole, cloning its overall look and feel, and distributing it as a template. This makes the
+      license source-available rather than OSI open source. It was added at the maintainer's request
+      ("don't let them steal it one-to-one").
+    - Visible credit is required whenever the work is made available, plus a source-code notice.
+    - Changes must be marked, and no endorsement may be implied.
+    - The brand, the attorney's personal and professional data, firm-specific copy and third-party
+      material are excluded.
+    - Rights terminate automatically on breach, with a 30-day cure period.
+    - Enforcement relies on FSEK (Law No. 5846) and the unfair-competition provisions of the
+      Turkish Commercial Code (TTK); Turkish law applies, with Ankara courts and enforcement offices.
+    - The Turkish text prevails.
+  - The licensor is Av. Vedat Murathan Kobya, as the maintainer specified. Permission requests go to
+    the firm e-mail. Because the maintainer wrote the code, a written assignment of economic rights
+    to the attorney is advisable (FSEK art. 52 requires written form).
+  - GitHub shows it as "Other" because it is not OSI-approved. The attorney should review the text.
 
 ## Open items and ideas
 

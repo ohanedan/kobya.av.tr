@@ -1,0 +1,393 @@
+KOBYA ATTRIBUTION LICENSE / KOBYA KAYNAK GÖSTERME LİSANSI
+Version / Sürüm 1.0 — 2026-09-15
+
+Copyright © 2026 Av. Vedat Murathan Kobya (Kobya Hukuk Bürosu)
+Project / Proje: https://github.com/ohanedan/kobya.av.tr
+
+This license is written in English and Turkish. Both versions are binding. If they conflict, the
+Turkish version prevails.
+
+Bu lisans İngilizce ve Türkçe olarak düzenlenmiştir. Her iki metin de bağlayıcıdır. Metinler
+arasında çelişki olması hâlinde Türkçe metin esas alınır.
+
+
+===================================================================================================
+ENGLISH
+===================================================================================================
+
+IN SHORT:
+
+- You may take individual pieces of this project, however small, and use them in your own, clearly
+  different work for any purpose, including commercial use.
+- You must credit this project clearly and visibly.
+- Copying the site as a whole, or cloning its overall design and swapping in your own name and
+  content, is not allowed without written permission.
+- Uncredited use and clones are not licensed and infringe the Licensor's rights.
+
+This summary is for convenience only; the terms below govern.
+
+1. DEFINITIONS
+
+1.1 "Licensor" means Av. Vedat Murathan Kobya.
+
+1.2 "Work" means the contents of this repository and of the website built from it, in whole or in
+    part, except the Excluded Material defined in Section 6. It includes source code, markup,
+    styles, animation and interaction logic, scripts, configuration, documentation, visual design,
+    layout and graphics.
+
+1.3 "Part" means any portion of the Work, whatever its size. This includes a single function, code
+    snippet, style rule, animation sequence, design element or layout, whether it is copied
+    verbatim, translated, modified or reproduced in substance.
+
+1.4 "Use" means to copy, run, study, modify, adapt, translate, combine with other works, publish,
+    distribute, communicate to the public, sublicense, sell or otherwise exploit the Work or any
+    Part. It also means to create and distribute works based on them ("Derivative Works").
+
+1.5 "Make Available" means to publish, distribute, deploy, host or otherwise provide the Work, a
+    Part or a Derivative Work to anyone other than You, including as a website, application,
+    service, template, package or publication.
+
+1.6 "Substantial Copy" means any website, web page, template, theme, starter kit, application or
+    other product that does either of the following:
+    (a) reproduces the Work as a whole or in large part; or
+    (b) reproduces the overall look and feel of the Work closely enough to be recognisably derived
+        from it or confusingly similar to it.
+    "Look and feel" means the combination of the Work's layout, section structure and order,
+    typography, colour palette, graphic motifs and signature animations, such as the preloader,
+    the masked headline reveals, the horizontally pinned process section, the practice-area
+    accordion with counter, the seal emblem and the filling footer wordmark. A product is a
+    Substantial Copy even if its names, texts, colours or images have been changed.
+
+1.7 "You" means any natural or legal person exercising rights under this license.
+
+2. GRANT OF RIGHTS
+
+Subject to the conditions and restrictions of this license, in particular Sections 3 and 4, the
+Licensor grants You a worldwide, royalty-free, non-exclusive license to Use the Work and any Part
+for any purpose, including commercial purposes. The license lasts for the full term of copyright
+protection unless it terminates under Section 8.
+
+3. ATTRIBUTION (A CONDITION OF THIS LICENSE)
+
+3.1 Visible credit. Whenever You Make Available the Work, a Part or a Derivative Work, You must
+    display one of the following notices where people who encounter it can reasonably see it. For
+    example: the website footer, an "About" or "Credits" page or screen, the opening pages of the
+    documentation, or the top of the repository README.
+
+      Based on kobya.av.tr by Vedat Murathan Kobya – https://github.com/ohanedan/kobya.av.tr
+
+    If You use only a Part:
+
+      Contains work from kobya.av.tr by Vedat Murathan Kobya – https://github.com/ohanedan/kobya.av.tr
+
+    The Turkish notices in Section 3.1 of the Turkish version may be used instead. The notice must
+    be legible, must name the Licensor and the project, and must include the link. On a website or
+    in an application, the link must be a working hyperlink.
+
+3.2 Source notice. Every copy of source code that contains the Work or a Part must include this
+    license file or a link to it. It must also carry the following comment next to the reused code
+    or at the top of the file that contains it:
+
+      Portions © 2026 Vedat Murathan Kobya – kobya.av.tr – https://github.com/ohanedan/kobya.av.tr
+      Used under the Kobya Attribution License 1.0
+
+3.3 Changes. If You modified the Work or a Part, the notices in Sections 3.1 and 3.2 must say so,
+    for example by adding "(modified)".
+
+3.4 No concealment. You may not remove, obscure or shrink the attribution until it is illegible.
+    You may not place it only where people cannot reasonably find it, or make access to it
+    conditional on payment, registration or login.
+
+3.5 Onward distribution. Anyone who receives the Work, a Part or a Derivative Work from You receives
+    it under this license. You must pass on this license and its attribution requirements and
+    restrictions, and You may not impose terms that remove them.
+
+3.6 Practical limits. If the medium makes a specific form of attribution impossible, You must give
+    the attribution in the most visible reasonable way that the medium allows.
+
+4. NO WHOLESALE COPYING
+
+4.1 This license does not permit You to create, publish or distribute a Substantial Copy, with or
+    without attribution. This includes cloning the site and replacing only its names, texts, logos,
+    images or contact details.
+
+4.2 You may not sell, distribute or offer the Work, or a lightly modified version of it, as a
+    template, theme, starter kit or boilerplate.
+
+4.3 You may use Parts under this license, with attribution under Section 3, when You incorporate
+    them into Your own work that, taken as a whole, is materially different from the Work and is not
+    a Substantial Copy.
+
+4.4 This section does not restrict any of the following:
+    (a) viewing and studying the Work;
+    (b) forking the repository through GitHub's own features;
+    (c) copying it privately to study it, test it or propose contributions to this project;
+    (d) running it locally.
+    Such forks and copies may not be deployed or otherwise Made Available as a website or product.
+
+4.5 A Substantial Copy requires the Licensor's prior written permission (Section 9).
+
+5. NO ENDORSEMENT
+
+You may not state or imply that the Licensor or Kobya Hukuk Bürosu endorses, sponsors or is
+affiliated with You, Your product or Your use of the Work.
+
+6. EXCLUDED MATERIAL (NOT LICENSED)
+
+This license grants no rights in the following:
+
+6.1 Brand identity. This covers the names "Kobya Hukuk Bürosu" and "Kobya Law Office", the name
+    "Kobya" used as a brand, the "K" monogram, the "KOBYA" wordmark, the seal design, and any
+    graphic that shows them, including the social preview images and icons. It also covers any
+    other trademark, trade name or distinctive sign.
+
+6.2 Personal and professional data. This covers information about Av. Vedat Murathan Kobya and the
+    law office, including names, biography, education, bar membership, contact details, address,
+    location and working hours.
+
+6.3 Firm-specific content. This covers the Turkish and English texts that describe the law office,
+    its principles, practice areas and working method. They are located mainly in
+    src/i18n/content.ts and src/data/firm.ts, and in the files and pages generated from them.
+
+6.4 Third-party material. Software, fonts and other material by third parties that is included in
+    or referenced by this repository, such as npm dependencies and font files, remains under its own
+    license.
+
+7. DISCLAIMER OF WARRANTY AND LIMITATION OF LIABILITY
+
+The Work is provided "as is", without warranty of any kind, express or implied. This includes, but
+is not limited to, warranties of merchantability, fitness for a particular purpose and
+non-infringement. To the fullest extent permitted by law, the Licensor is not liable for any claim,
+damage or other liability arising from or in connection with the Work or its Use. Nothing in the
+Work constitutes legal advice.
+
+8. TERMINATION AND ENFORCEMENT
+
+8.1 Any Use that does not comply with Section 3, 4, 5 or 6 is not licensed. Your rights under this
+    license terminate automatically when the non-compliance begins.
+
+8.2 If You fully cure the non-compliance within 30 days of discovering it or of receiving notice
+    from the Licensor, Your rights are reinstated, except where the Licensor has notified You that
+    reinstatement is refused because of repeated non-compliance. Reinstatement does not affect the
+    Licensor's remedies for the period of non-compliance.
+
+8.3 Unlicensed Use infringes the Licensor's rights under the following, where applicable:
+    - the Law No. 5846 on Intellectual and Artistic Works of the Republic of Türkiye;
+    - the unfair competition provisions of the Turkish Commercial Code No. 6102;
+    - other applicable national and international law.
+    The Licensor reserves all rights and remedies available by law, including injunctions, removal
+    of the infringing material, compensation and recovery of enforcement costs.
+
+8.4 Termination of Your rights does not affect people who received the Work from You in compliance
+    with this license.
+
+9. OTHER PERMISSIONS
+
+Use on terms other than those of this license requires the Licensor's prior written permission.
+This includes Use without the attribution in Section 3 and the creation of a Substantial Copy.
+Contact: murathankobyaa@gmail.com
+
+10. GOVERNING LAW AND JURISDICTION
+
+This license is governed by the laws of the Republic of Türkiye. Subject to mandatory provisions of
+applicable law, the courts and enforcement offices of Ankara (Ankara Mahkemeleri ve İcra Daireleri)
+have jurisdiction over any dispute arising from this license.
+
+11. SEVERABILITY
+
+If any provision of this license is held invalid or unenforceable, it is enforced to the maximum
+extent permitted, and the remaining provisions remain in full effect.
+
+
+===================================================================================================
+TÜRKÇE
+===================================================================================================
+
+KISACA:
+
+- Bu projenin tek tek parçalarını, en küçüğüne kadar, kendi ve açıkça farklı çalışmanızda, ticari
+  kullanım dahil her amaçla kullanabilirsiniz.
+- Tek şart, bu projeyi açıkça ve görünür biçimde kaynak göstermenizdir.
+- Sitenin tamamını kopyalamak ya da genel tasarımını kopyalayıp yalnızca ad ve içeriği
+  değiştirmek, yazılı izin olmadan yasaktır.
+- Kaynak gösterilmeden yapılan kullanımlar ve kopya siteler lisans kapsamında değildir ve Lisans
+  Veren'in haklarını ihlal eder.
+
+Bu özet yalnızca kolaylık içindir; bağlayıcı olan aşağıdaki hükümlerdir.
+
+1. TANIMLAR
+
+1.1 "Lisans Veren": Av. Vedat Murathan Kobya.
+
+1.2 "Eser": 6. maddede tanımlanan Hariç Tutulan Unsurlar dışında kalmak üzere, bu deponun ve bu
+    depodan üretilen internet sitesinin içeriğinin tamamı veya bir kısmı. Kaynak kod, işaretleme
+    (markup), stiller, animasyon ve etkileşim mantığı, betikler, yapılandırma, dokümantasyon, görsel
+    tasarım, sayfa düzeni ve grafikler Eser'e dahildir.
+
+1.3 "Parça": Büyüklüğüne bakılmaksızın Eser'in herhangi bir bölümü. Tek bir fonksiyon, kod
+    parçacığı, stil kuralı, animasyon kurgusu, tasarım öğesi veya sayfa düzeni de bu kapsamdadır.
+    Parça'nın birebir kopyalanmış, çevrilmiş, değiştirilmiş ya da özü itibarıyla yeniden üretilmiş
+    olması fark etmez.
+
+1.4 "Kullanım": Eser'i veya herhangi bir Parça'yı çoğaltma, çalıştırma, inceleme, değiştirme,
+    uyarlama, çevirme, başka eserlerle birleştirme, yayımlama, yayma, umuma iletme, alt lisans verme,
+    satma veya başka surette bunlardan yararlanma. Bunlara dayanan eserleri ("İşlenme Eserler")
+    oluşturmak ve dağıtmak da Kullanım'dır.
+
+1.5 "Erişime Sunma": Eser'i, bir Parça'yı veya bir İşlenme Eser'i Siz dışındaki herhangi bir kişiye
+    yayımlama, dağıtma, yayına alma, barındırma veya başka surette sunma. İnternet sitesi, uygulama,
+    hizmet, şablon, paket veya yayın olarak sunmak da buna dahildir.
+
+1.6 "Esaslı Kopya": Aşağıdakilerden birini yapan her türlü internet sitesi, internet sayfası,
+    şablon, tema, başlangıç kiti, uygulama veya diğer ürün:
+    (a) Eser'i bütünüyle veya büyük ölçüde yeniden üretmek; ya da
+    (b) Eser'in genel görünüm ve hissini, ondan türetildiği anlaşılacak veya onunla
+        karıştırılabilecek ölçüde yeniden üretmek.
+    "Genel görünüm ve his", Eser'in sayfa düzeni, bölüm yapısı ve sırası, tipografisi, renk paleti,
+    grafik motifleri ile karakteristik animasyonlarının birleşimidir. Açılış animasyonu, maskeli
+    başlık girişleri, yatay sabitlenen süreç bölümü, sayaçlı çalışma alanları akordeonu, mühür
+    amblemi ve dolan alt bilgi yazı logosu bu animasyonlara örnektir. Adların, metinlerin, renklerin
+    veya görsellerin değiştirilmiş olması ürünün Esaslı Kopya niteliğini ortadan kaldırmaz.
+
+1.7 "Siz": Bu lisans kapsamındaki hakları kullanan gerçek veya tüzel kişi.
+
+2. LİSANS HAKKI
+
+Bu lisanstaki koşullara ve kısıtlamalara, özellikle 3. ve 4. maddelere uyulması kaydıyla Lisans
+Veren, Size Eser'i ve her bir Parça'yı ticari amaçlar dahil her amaçla Kullanmanız için dünya
+çapında geçerli, bedelsiz ve münhasır olmayan bir lisans verir. Lisans, 8. madde uyarınca sona
+ermedikçe telif hakkı koruma süresi boyunca geçerlidir.
+
+3. KAYNAK GÖSTERME (LİSANSIN KOŞULU)
+
+3.1 Görünür atıf. Eser'i, bir Parça'yı veya bir İşlenme Eser'i Erişime Sunduğunuz her durumda,
+    aşağıdaki ibarelerden birini, onunla karşılaşan kişilerin makul olarak görebileceği bir yerde
+    göstermeniz gerekir. Örneğin: internet sitesinin alt bilgi (footer) alanı, "Hakkında" veya
+    "Emeği Geçenler" sayfası ya da ekranı, dokümantasyonun ilk sayfaları veya deponun README
+    dosyasının başı.
+
+      kobya.av.tr (Av. Vedat Murathan Kobya) projesi temel alınmıştır – https://github.com/ohanedan/kobya.av.tr
+
+    Yalnızca bir Parça kullanılıyorsa:
+
+      kobya.av.tr (Av. Vedat Murathan Kobya) projesinden alınan çalışmalar içerir – https://github.com/ohanedan/kobya.av.tr
+
+    Bunların yerine İngilizce metnin 3.1. maddesindeki İngilizce ibareler de kullanılabilir. İbare
+    okunaklı olmalı, Lisans Veren'in ve projenin adını ve bağlantıyı içermelidir. İnternet sitesinde
+    veya uygulamada bağlantı tıklanabilir ve çalışır olmalıdır.
+
+3.2 Kaynak kod bildirimi. Eser'i veya bir Parça'yı içeren her kaynak kod kopyasında bu lisans
+    dosyası ya da ona bir bağlantı bulunmalıdır. Ayrıca yeniden kullanılan kodun yanına veya kodun
+    bulunduğu dosyanın başına şu açıklama eklenmelidir:
+
+      Portions © 2026 Vedat Murathan Kobya – kobya.av.tr – https://github.com/ohanedan/kobya.av.tr
+      Used under the Kobya Attribution License 1.0
+
+3.3 Değişiklikler. Eser'de veya bir Parça'da değişiklik yaptıysanız, bunu 3.1. ve 3.2. maddelerdeki
+    bildirimlerde belirtmeniz gerekir; örneğin "(değiştirilmiştir)" ibaresini ekleyerek.
+
+3.4 Gizleme yasağı. Atıf kaldırılamaz, gizlenemez, okunamayacak kadar küçültülemez ve yalnızca
+    kişilerin makul olarak ulaşamayacağı bir yere konulamaz. Atfa erişim ödeme, kayıt veya oturum
+    açma şartına bağlanamaz.
+
+3.5 Sonraki dağıtım. Eser'i, bir Parça'yı veya bir İşlenme Eser'i Sizden edinen herkes onu bu
+    lisans kapsamında edinir. Bu lisansı, kaynak gösterme yükümlülüklerini ve kısıtlamalarını
+    aktarmanız zorunludur; bunları ortadan kaldıran koşullar öngöremezsiniz.
+
+3.6 Uygulamadaki sınırlar. Kullanılan ortam belirli bir atıf biçimini imkânsız kılıyorsa, atfı o
+    ortamın izin verdiği en görünür makul biçimde yapmanız gerekir.
+
+4. BİREBİR KOPYALAMA YASAĞI
+
+4.1 2. maddedeki lisans, atıf yapılsın veya yapılmasın, Esaslı Kopya oluşturma, yayımlama veya
+    dağıtma hakkı vermez. Siteyi kopyalayıp yalnızca adlarını, metinlerini, logolarını, görsellerini
+    veya iletişim bilgilerini değiştirmek de bu kapsamdadır.
+
+4.2 Eser'i veya az değiştirilmiş bir sürümünü şablon, tema, başlangıç kiti veya hazır proje
+    iskeleti olarak satamaz, dağıtamaz veya sunamazsınız.
+
+4.3 Parçalar, bütün olarak değerlendirildiğinde Eser'den esaslı biçimde farklı olan ve Esaslı Kopya
+    niteliği taşımayan kendi çalışmanıza dahil edilmeleri kaydıyla, 3. maddeye uygun atıfla bu
+    lisans kapsamında kullanılabilir.
+
+4.4 Bu madde aşağıdakileri kısıtlamaz:
+    (a) Eser'i görüntülemek ve incelemek;
+    (b) depoyu GitHub'ın kendi imkânlarıyla çatallamak (fork);
+    (c) inceleme, test veya bu projeye katkı önerme amacıyla kişisel olarak kopyalamak;
+    (d) yerel olarak çalıştırmak.
+    Ancak bu çatallar ve kopyalar yayına alınamaz ve internet sitesi veya ürün olarak başka
+    surette Erişime Sunulamaz.
+
+4.5 Esaslı Kopya, Lisans Veren'in önceden verilmiş yazılı iznine tabidir (9. madde).
+
+5. DESTEK VEYA İLİŞKİ İMA ETME YASAĞI
+
+Lisans Veren'in veya Kobya Hukuk Bürosu'nun Sizi, ürününüzü veya Eser'i kullanımınızı
+desteklediğini, onayladığını ya da sizinle bağlantılı olduğunu açıkça veya dolaylı olarak ileri
+süremezsiniz.
+
+6. HARİÇ TUTULAN UNSURLAR (LİSANS KAPSAMINDA DEĞİLDİR)
+
+Bu lisans aşağıdaki unsurlar üzerinde hiçbir hak vermez:
+
+6.1 Marka kimliği. "Kobya Hukuk Bürosu" ve "Kobya Law Office" adları, marka olarak kullanılan
+    "Kobya" adı, "K" monogramı, "KOBYA" yazı logosu ve mühür tasarımı bu kapsamdadır. Bunları içeren
+    tüm grafikler (sosyal medya önizleme görselleri ve ikonlar dahil) ile diğer tüm markalar, ticaret
+    unvanları ve ayırt edici işaretler de hariç tutulmuştur.
+
+6.2 Kişisel ve mesleki veriler. Av. Vedat Murathan Kobya'ya ve hukuk bürosuna ilişkin bilgiler bu
+    kapsamdadır: adlar, özgeçmiş, eğitim, baro kaydı, iletişim bilgileri, adres, konum ve çalışma
+    saatleri dahil.
+
+6.3 Büroya özgü içerik. Hukuk bürosunu, ilkelerini, çalışma alanlarını ve çalışma şeklini anlatan
+    Türkçe ve İngilizce metinler bu kapsamdadır. Bu metinler başlıca src/i18n/content.ts ve
+    src/data/firm.ts dosyalarında ve bunlardan üretilen dosya ve sayfalarda yer alır.
+
+6.4 Üçüncü kişilere ait unsurlar. Bu depoda yer alan veya depoda atıf yapılan üçüncü kişilere ait
+    yazılımlar, yazı tipleri ve diğer unsurlar (örneğin npm bağımlılıkları ve yazı tipi dosyaları)
+    kendi lisanslarına tabidir.
+
+7. GARANTİ VERİLMEMESİ VE SORUMLULUĞUN SINIRLANDIRILMASI
+
+Eser "olduğu gibi" sunulmaktadır ve açık veya zımni hiçbir garanti içermez. Satılabilirlik, belirli
+bir amaca uygunluk ve hak ihlali bulunmaması garantileri de bu kapsamdadır. Lisans Veren, hukukun
+izin verdiği azami ölçüde, Eser'den veya Eser'in Kullanımından doğan ya da bunlarla bağlantılı
+hiçbir talep, zarar veya başka bir yükümlülükten sorumlu değildir. Eser'deki hiçbir içerik hukuki
+danışmanlık niteliği taşımaz.
+
+8. SONA ERME VE HAKLARIN KORUNMASI
+
+8.1 3., 4., 5. veya 6. maddeye aykırı her Kullanım lisans kapsamı dışındadır. Bu lisanstan doğan
+    haklarınız, aykırılığın başladığı anda kendiliğinden sona erer.
+
+8.2 Aykırılığı öğrendiğiniz veya Lisans Veren'den bildirim aldığınız tarihten itibaren 30 gün içinde
+    tamamen giderirseniz haklarınız yeniden başlar. Lisans Veren'in, tekrarlanan aykırılık nedeniyle
+    hakların yeniden başlamayacağını Size bildirdiği durumlar bunun istisnasıdır. Hakların yeniden
+    başlaması, Lisans Veren'in aykırılık süresine ilişkin haklarını etkilemez.
+
+8.3 Lisans kapsamı dışındaki Kullanım, uygulanabildiği ölçüde aşağıdaki mevzuat uyarınca Lisans
+    Veren'in haklarının ihlalidir:
+    - 5846 sayılı Fikir ve Sanat Eserleri Kanunu;
+    - 6102 sayılı Türk Ticaret Kanunu'nun haksız rekabete ilişkin hükümleri;
+    - uygulanacak diğer ulusal ve uluslararası mevzuat.
+    Lisans Veren; tecavüzün durdurulması ve önlenmesi, ihlal eden içeriğin kaldırılması, tazminat ve
+    takip masraflarının tahsili dahil olmak üzere kanunen sahip olduğu tüm hak ve talepleri saklı
+    tutar.
+
+8.4 Haklarınızın sona ermesi, Eser'i Sizden bu lisansa uygun şekilde edinmiş kişileri etkilemez.
+
+9. DİĞER İZİNLER
+
+Bu lisansın koşulları dışında yapılacak her Kullanım, Lisans Veren'in önceden verilmiş yazılı
+iznine tabidir. 3. maddedeki kaynak göstermeden yapılan Kullanım ve Esaslı Kopya oluşturulması da
+bu kapsamdadır. İletişim: murathankobyaa@gmail.com
+
+10. UYGULANACAK HUKUK VE YETKİLİ MAHKEME
+
+Bu lisans Türkiye Cumhuriyeti hukukuna tabidir. Uygulanacak hukukun emredici hükümleri saklı kalmak
+kaydıyla, bu lisanstan doğan uyuşmazlıklarda Ankara Mahkemeleri ve İcra Daireleri yetkilidir.
+
+11. BÖLÜNEBİLİRLİK
+
+Bu lisansın herhangi bir hükmünün geçersiz veya uygulanamaz sayılması hâlinde, o hüküm izin verilen
+azami ölçüde uygulanır ve diğer hükümler tamamen geçerliliğini korur.
