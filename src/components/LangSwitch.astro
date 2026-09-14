@@ -1,0 +1,39 @@
+---
+import { content, type Lang } from '../i18n/content';
+import { withBase } from '../lib/paths';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const languages: { code: Lang; href: string; name: string }[] = [
+  { code: 'tr', href: withBase('/'), name: 'Türkçe' },
+  { code: 'en', href: withBase('/en/'), name: 'English' },
+];
+---
+
+<div class="lang-switch" role="group" aria-label={content[lang].header.langLabel}>
+  {
+    languages.map((language, index) => (
+      <>
+        {index > 0 && (
+          <span class="lang-sep" aria-hidden="true">
+            /
+          </span>
+        )}
+        <a
+          href={language.href}
+          hreflang={language.code}
+          lang={language.code}
+          aria-label={language.name}
+          aria-current={language.code === lang ? 'page' : undefined}
+          data-lang-link
+          data-ids={JSON.stringify(content[language.code].ids)}
+        >
+          {language.code.toUpperCase()}
+        </a>
+      </>
+    ))
+  }
+</div>

@@ -1,0 +1,73 @@
+---
+import Monogram from './Monogram.astro';
+import SectionLabel from './SectionLabel.astro';
+import { content, type Lang } from '../i18n/content';
+import { firm } from '../data/firm';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = content[lang];
+const [firstName, ...rest] = firm.attorney.split(' ');
+const lastName = rest.pop();
+const middleName = rest.join(' ');
+---
+
+<section class="section section-light attorney" id={t.ids.attorney} data-section="attorney">
+  <div class="container attorney-grid">
+    <figure class="emblem" data-emblem>
+      <div class="emblem-box">
+        <div class="emblem-frame">
+          <div class="emblem-inner" data-emblem-inner>
+            <svg class="emblem-ring" viewBox="0 0 200 200" aria-hidden="true">
+              <defs>
+                <path id="emblem-ring-path" d="M100,100 m-84,0 a84,84 0 1,1 168,0 a84,84 0 1,1 -168,0"></path>
+              </defs>
+              <text>
+                <textPath href="#emblem-ring-path" textLength="526" lengthAdjust="spacing">{t.attorney.ring}</textPath>
+              </text>
+            </svg>
+            <Monogram class="emblem-mark" />
+          </div>
+          <div class="emblem-meta emblem-meta-top" aria-hidden="true">
+            <span>Kobya</span><span>{t.header.sub}</span>
+          </div>
+          <div class="emblem-meta emblem-meta-bottom" aria-hidden="true">
+            <span>{firm.address.city}</span><span>{firm.foundedRoman}</span>
+          </div>
+        </div>
+      </div>
+      <figcaption class="emblem-caption">
+        <span>{t.prefix} {firm.attorney}</span>
+        <span>{t.brand}</span>
+      </figcaption>
+    </figure>
+
+    <div class="attorney-content">
+      <SectionLabel num="03" text={t.attorney.label} />
+      <p class="attorney-honorific" data-reveal>{t.attorney.honorific}</p>
+      <h2 class="attorney-name" data-lines>
+        <span class="line"><span class="line-inner">{firstName} {middleName}</span></span>
+        <span class="line"><span class="line-inner">{lastName}</span></span>
+      </h2>
+      <p class="attorney-role" data-reveal><span class="label-line" aria-hidden="true"></span>{t.attorney.role}</p>
+
+      <div class="attorney-bio" data-stagger>
+        {t.attorney.bio.map((paragraph) => <p data-stagger-item>{paragraph}</p>)}
+      </div>
+
+      <dl class="facts" data-stagger>
+        {
+          t.attorney.facts.map((fact) => (
+            <div class="fact" data-stagger-item>
+              <dt>{fact.label}</dt>
+              <dd>{fact.value}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </div>
+</section>

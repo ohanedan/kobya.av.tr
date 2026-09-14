@@ -1,0 +1,39 @@
+---
+import Base from '../layouts/Base.astro';
+import Preloader from './Preloader.astro';
+import Header from './Header.astro';
+import Hero from './Hero.astro';
+import Office from './Office.astro';
+import Practice from './Practice.astro';
+import Attorney from './Attorney.astro';
+import Approach from './Approach.astro';
+import Contact from './Contact.astro';
+import Footer from './Footer.astro';
+import { content, type Lang } from '../i18n/content';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = content[lang];
+---
+
+<Base lang={lang}>
+  <a class="skip-link" href="#main">{t.skip}</a>
+  <Preloader lang={lang} />
+  <Header lang={lang} />
+  <main id="main">
+    <Hero lang={lang} />
+    <Office lang={lang} />
+    <Practice lang={lang} />
+    <Attorney lang={lang} />
+    <Approach lang={lang} />
+    <Contact lang={lang} />
+  </main>
+  <Footer lang={lang} />
+</Base>
+
+<script>
+  import '../scripts/main';
+</script>

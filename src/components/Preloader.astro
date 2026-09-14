@@ -1,0 +1,17 @@
+---
+import Monogram from './Monogram.astro';
+import { content, type Lang } from '../i18n/content';
+
+interface Props {
+  lang: Lang;
+}
+
+const t = content[Astro.props.lang];
+---
+
+<div class="preloader" data-preloader aria-hidden="true">
+  <div class="preloader-inner">
+    <Monogram class="preloader-mark" />
+    <p class="preloader-text">{t.brand}</p>
+  </div>
+</div>

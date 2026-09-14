@@ -1,0 +1,23 @@
+---
+import Base from '../layouts/Base.astro';
+import Monogram from '../components/Monogram.astro';
+import { withBase } from '../lib/paths';
+---
+
+<Base lang="tr" title="Sayfa bulunamadı · Page not found | Kobya Hukuk Bürosu" noindex>
+  <main class="notfound">
+    <div class="grain" aria-hidden="true"></div>
+    <Monogram class="notfound-mark" />
+    <p class="label">
+      <span class="label-num">404</span>
+      <span class="label-line" aria-hidden="true"></span>
+      <span>Kobya Hukuk Bürosu</span>
+    </p>
+    <h1 class="notfound-title">Aradığınız sayfa<br /><em>bulunamadı.</em></h1>
+    <p class="notfound-en" lang="en">The page you are looking for could not be found.</p>
+    <div class="notfound-links">
+      <a class="btn-pill" href={withBase('/')}>Ana sayfa</a>
+      <a class="btn-pill" href={withBase('/en/')} lang="en">Home</a>
+    </div>
+  </main>
+</Base>

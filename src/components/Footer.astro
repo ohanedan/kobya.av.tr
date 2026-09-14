@@ -1,0 +1,66 @@
+---
+import Monogram from './Monogram.astro';
+import { content, type Lang } from '../i18n/content';
+import { firm, links } from '../data/firm';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = content[lang];
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-top">
+      <a class="brand" href="#top">
+        <Monogram class="brand-mark" />
+        <span class="brand-text">
+          <span class="brand-name">Kobya</span>
+          <span class="brand-sub">{t.header.sub}</span>
+        </span>
+      </a>
+      <nav class="footer-nav" aria-label={t.header.navLabel}>
+        <ul>
+          {
+            t.nav.map((item) => (
+              <li>
+                <a href={`#${t.ids[item.key]}`}>{item.label}</a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+      <a class="back-top" href="#top">
+        <span>{t.footer.backToTop}</span>
+        <span class="back-top-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+            <path d="M12 20V4M6 10l6-6 6 6"></path>
+          </svg>
+        </span>
+      </a>
+    </div>
+
+    <address class="footer-nap">
+      <span>{t.brand}</span>
+      <span>
+        {firm.address.street}, {firm.address.postalCode} {firm.address.district} / {firm.address.city}
+      </span>
+      <a href={links.tel}>{firm.phone.display}</a>
+      <a href={links.mail}>{firm.email}</a>
+    </address>
+
+    <div class="footer-wordmark" aria-hidden="true">
+      <span class="wm-outline">KOBYA</span>
+      <span class="wm-fill" data-wordmark-fill>KOBYA</span>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© {year} {t.brand}. {t.footer.rights}</p>
+      <p class="footer-disclaimer">{t.footer.disclaimer}</p>
+      <p>{t.footer.privacy}</p>
+    </div>
+  </div>
+</footer>

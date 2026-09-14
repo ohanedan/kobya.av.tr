@@ -1,0 +1,144 @@
+---
+import Monogram from './Monogram.astro';
+import SectionLabel from './SectionLabel.astro';
+import Lines from './Lines.astro';
+import { content, type Lang } from '../i18n/content';
+import { firm, links } from '../data/firm';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = content[lang];
+
+const icons = {
+  phone:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"><path d="M5.2 3.8h3.3l1.7 4.3-2.1 1.4a11.5 11.5 0 0 0 5.4 5.4l1.4-2.1 4.3 1.7v3.3a2 2 0 0 1-2.2 2A16.6 16.6 0 0 1 3.2 6a2 2 0 0 1 2-2.2z"/></svg>',
+  whatsapp:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"><path d="M20.5 11.8a8.5 8.5 0 0 1-12.6 7.4L3.5 20.5l1.3-4.2a8.5 8.5 0 1 1 15.7-4.5z"/><path d="M9 8.4c.3-.4.6-.4.9-.4h.4l1 2.2-.7.9a5 5 0 0 0 2.4 2.4l.9-.7 2.2 1v.4c0 .3 0 .6-.4.9-.6.5-1.6.6-2.8.1a7.6 7.6 0 0 1-3.9-3.9c-.5-1.2-.4-2.2 0-2.9z"/></svg>',
+  email:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="1.5"/><path d="m3.6 6.2 8.4 6.8 8.4-6.8"/></svg>',
+};
+
+const channels = [
+  { ...t.contact.phone, value: firm.phone.display, href: links.tel, icon: icons.phone, external: false },
+  {
+    ...t.contact.whatsapp,
+    value: firm.phone.display,
+    href: links.whatsapp(t.contact.whatsapp.message),
+    icon: icons.whatsapp,
+    external: true,
+  },
+  { ...t.contact.email, value: firm.email, href: links.mail, icon: icons.email, external: false },
+];
+
+const arrow =
+  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg>';
+---
+
+<section class="section section-dark contact" id={t.ids.contact} data-section="contact" data-glow-area>
+  <div class="contact-bg" aria-hidden="true">
+    <div class="glow" data-glow></div>
+    <div class="grain"></div>
+  </div>
+
+  <div class="container">
+    <SectionLabel num="05" text={t.contact.label} />
+    <div class="contact-head">
+      <h2 class="contact-title" data-lines><Lines lines={t.contact.titleLines} /></h2>
+      <p class="contact-lead" data-reveal>{t.contact.lead}</p>
+    </div>
+
+    <ul class="channels" data-stagger>
+      {
+        channels.map((channel) => (
+          <li data-stagger-item>
+            <a
+              class="channel"
+              href={channel.href}
+              target={channel.external ? '_blank' : undefined}
+              rel={channel.external ? 'noopener noreferrer' : undefined}
+            >
+              <span class="channel-top">
+                <span class="channel-icon" set:html={channel.icon} />
+                <span class="channel-arrow" set:html={arrow} />
+              </span>
+              <span class="channel-label">{channel.label}</span>
+              <span class="channel-value">{channel.value}</span>
+              <span class="channel-action">{channel.action}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="contact-info">
+      <div class="meta-list" data-stagger>
+        <div class="meta-block meta-wide" data-stagger-item>
+          <h3 class="meta-label">{t.contact.address}</h3>
+          <address class="meta-value">
+            {firm.address.street}<br />
+            {firm.address.postalCode} {firm.address.district} / {firm.address.city}
+          </address>
+          <p class="meta-note">{t.contact.appointment}</p>
+          <a class="text-link" href={links.maps} target="_blank" rel="noopener noreferrer">
+            {t.contact.map.open}
+            <Fragment set:html={arrow} />
+          </a>
+        </div>
+        <div class="meta-block" data-stagger-item>
+          <h3 class="meta-label">{t.contact.hours}</h3>
+          <p class="meta-value">{firm.hours[lang]}</p>
+        </div>
+        <div class="meta-block" data-stagger-item>
+          <h3 class="meta-label">{t.contact.bar}</h3>
+          <p class="meta-value">{firm.bar[lang]}</p>
+        </div>
+        <div class="meta-block meta-wide" data-stagger-item>
+          <h3 class="meta-label">{t.contact.social}</h3>
+          <a class="text-link" href={firm.linkedin} target="_blank" rel="noopener noreferrer">
+            {t.contact.socialAction}
+            <Fragment set:html={arrow} />
+          </a>
+        </div>
+      </div>
+
+      <div class="map" data-map data-src={links.mapsEmbed} data-title={t.contact.map.frameTitle} data-reveal>
+        <div class="map-facade">
+          <svg class="map-art" viewBox="0 0 480 320" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <defs>
+              <pattern id="map-grid" width="24" height="24" patternUnits="userSpaceOnUse">
+                <path d="M24 0H0v24" fill="none" stroke="currentColor" stroke-opacity="0.07" stroke-width="0.6"></path>
+              </pattern>
+            </defs>
+            <rect width="480" height="320" fill="url(#map-grid)"></rect>
+            <path
+              d="M332 206c26-30 96-26 118 4 20 28-10 74-58 74-40 0-86-44-60-78z"
+              fill="currentColor"
+              fill-opacity="0.06"
+              stroke="currentColor"
+              stroke-opacity="0.25"
+              stroke-width="0.8"></path>
+            <g fill="none" stroke="currentColor" stroke-linecap="round">
+              <path d="M-10 214C70 188 150 226 240 168S390 96 490 118" stroke-opacity="0.45" stroke-width="2"></path>
+              <path d="M70-10c34 72 10 150 60 340" stroke-opacity="0.3" stroke-width="1.2"></path>
+              <path d="M292-10l-24 110 30 230" stroke-opacity="0.3" stroke-width="1.2"></path>
+              <path d="M-10 72l160 22 340-44" stroke-opacity="0.22" stroke-width="1"></path>
+              <path d="M150 330c40-70 110-70 176-110" stroke-opacity="0.22" stroke-width="1"></path>
+              <path d="M180 40l36 60 64 10M120 150l70 16 30 70" stroke-opacity="0.16" stroke-width="0.8"></path>
+            </g>
+          </svg>
+          <div class="map-pin" aria-hidden="true">
+            <Monogram class="map-pin-mark" />
+          </div>
+          <div class="map-facade-body">
+            <p class="map-place">{firm.address.district} / {firm.address.city}</p>
+            <button class="btn-pill" type="button" data-map-load>{t.contact.map.load}</button>
+            <p class="map-notice">{t.contact.map.notice}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,55 @@
+---
+import SectionLabel from './SectionLabel.astro';
+import Lines from './Lines.astro';
+import { content, type Lang } from '../i18n/content';
+import { pad } from '../lib/text';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = content[lang];
+---
+
+<section class="approach" id={t.ids.approach} data-section="approach">
+  <div class="approach-pin" data-approach-pin>
+    <div class="container approach-head">
+      <div>
+        <SectionLabel num="04" text={t.approach.label} />
+        <h2 class="section-title approach-title" data-lines><Lines lines={t.approach.titleLines} /></h2>
+      </div>
+      <div class="approach-aside">
+        <p class="section-intro" data-reveal>{t.approach.intro}</p>
+        <div class="approach-progress" aria-hidden="true"><span data-approach-bar></span></div>
+      </div>
+    </div>
+
+    <ol class="approach-track" data-approach-track>
+      {
+        t.approach.steps.map((step, index) => (
+          <li class="step">
+            <span class="step-num" aria-hidden="true">
+              {pad(index + 1)}
+            </span>
+            <div>
+              <h3 class="step-title">{step.title}</h3>
+              <p>{step.text}</p>
+            </div>
+          </li>
+        ))
+      }
+      <li class="step step-cta">
+        <a class="step-cta-link" href={`#${t.ids.contact}`}>
+          <span class="step-cta-title">{t.approach.ctaTitle}</span>
+          <span class="step-cta-action">
+            {t.approach.ctaAction}
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true">
+              <path d="M4 12h16M14 6l6 6-6 6"></path>
+            </svg>
+          </span>
+        </a>
+      </li>
+    </ol>
+  </div>
+</section>

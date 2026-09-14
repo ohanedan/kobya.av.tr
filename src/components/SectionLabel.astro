@@ -1,0 +1,17 @@
+---
+interface Props {
+  num: string;
+  text: string;
+  /** Render as the section's <h2> when the section has no other visible heading. */
+  heading?: boolean;
+}
+
+const { num, text, heading = false } = Astro.props;
+const Tag = heading ? 'h2' : 'p';
+---
+
+<Tag class="label" data-reveal>
+  <span class="label-num" aria-hidden="true">{num}</span>
+  <span class="label-line" aria-hidden="true"></span>
+  <span>{text}</span>
+</Tag>

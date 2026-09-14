@@ -1,0 +1,223 @@
+---
+import { Font } from 'astro:assets';
+import 'lenis/dist/lenis.css';
+import '../styles/global.css';
+
+import { content, type Lang } from '../i18n/content';
+import { firm, links } from '../data/firm';
+import { verification } from '../data/seo';
+import { isProductionSite, withBase } from '../lib/paths';
+
+interface Props {
+  lang: Lang;
+  title?: string;
+  description?: string;
+  /** For utility pages (404): noindex, and no canonical, hreflang or structured data. */
+  noindex?: boolean;
+}
+
+const { lang, noindex = false } = Astro.props;
+const t = content[lang];
+const title = Astro.props.title ?? t.meta.title;
+const description = Astro.props.description ?? t.meta.description;
+
+const site = Astro.site ?? new URL(firm.url);
+const absolute = (path: string) => new URL(withBase(path), site).href;
+// Preview builds (GitHub Pages project URL) are kept out of search indexes.
+const indexable = !noindex && isProductionSite(Astro.site);
+const urls = { tr: absolute('/'), en: absolute('/en/') };
+const pageUrl = urls[lang];
+const ogImage = absolute(lang === 'tr' ? '/og.jpg' : '/og-en.jpg');
+const htmlLang = lang === 'tr' ? 'tr-TR' : 'en-US';
+
+/*
+ * Structured data as one linked @graph. Entity @ids are anchored on the Turkish home page so both
+ * language versions describe the same firm and person rather than two duplicates.
+ */
+const id = {
+  website: `${urls.tr}#website`,
+  office: `${urls.tr}#office`,
+  attorney: `${urls.tr}#attorney`,
+  webpage: `${pageUrl}#webpage`,
+};
+const { address } = firm;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebSite',
+      '@id': id.website,
+      url: urls.tr,
+      name: firm.name,
+      alternateName: [firm.nameEn, 'Kobya Hukuk', 'kobya.av.tr'],
+      inLanguage: ['tr-TR', 'en-US'],
+      publisher: { '@id': id.office },
+    },
+    {
+      '@type': 'WebPage',
+      '@id': id.webpage,
+      url: pageUrl,
+      name: title,
+      description,
+      inLanguage: htmlLang,
+      isPartOf: { '@id': id.website },
+      about: { '@id': id.office },
+      mainEntity: { '@id': id.office },
+      primaryImageOfPage: { '@type': 'ImageObject', url: ogImage, width: 1200, height: 630 },
+      dateModified: new Date().toISOString(),
+    },
+    {
+      '@type': 'LegalService',
+      '@id': id.office,
+      name: t.brand,
+      alternateName: lang === 'tr' ? firm.nameEn : firm.name,
+      description,
+      url: pageUrl,
+      logo: { '@type': 'ImageObject', url: absolute('/icon-512.png'), width: 512, height: 512 },
+      image: ogImage,
+      telephone: firm.phone.tel,
+      email: firm.email,
+      foundingDate: String(firm.founded),
+      founder: { '@id': id.attorney },
+      employee: { '@id': id.attorney },
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress: address.street,
+        addressLocality: address.district,
+        addressRegion: address.city,
+        postalCode: address.postalCode,
+        addressCountry: address.country,
+      },
+      geo: { '@type': 'GeoCoordinates', latitude: firm.geo.latitude, longitude: firm.geo.longitude },
+      hasMap: links.maps,
+      openingHoursSpecification: {
+        '@type': 'OpeningHoursSpecification',
+        dayOfWeek: firm.openingHours.days.map((day) => `https://schema.org/${day}`),
+        opens: firm.openingHours.opens,
+        closes: firm.openingHours.closes,
+      },
+      areaServed: [
+        { '@type': 'City', name: address.city },
+        { '@type': 'Country', name: 'Türkiye' },
+      ],
+      knowsLanguage: 'tr',
+      knowsAbout: t.practice.areas.map((area) => area.title),
+      hasOfferCatalog: {
+        '@type': 'OfferCatalog',
+        name: t.practice.label,
+        itemListElement: t.practice.areas.map((area) => ({
+          '@type': 'Offer',
+          itemOffered: { '@type': 'Service', name: area.title, description: area.text, provider: { '@id': id.office } },
+        })),
+      },
+      contactPoint: {
+        '@type': 'ContactPoint',
+        contactType: 'customer service',
+        telephone: firm.phone.tel,
+        email: firm.email,
+        availableLanguage: ['Turkish'],
+        areaServed: 'TR',
+      },
+    },
+    {
+      '@type': 'Person',
+      '@id': id.attorney,
+      name: firm.attorney,
+      honorificPrefix: 'Av.',
+      jobTitle: t.attorney.role,
+      url: `${pageUrl}#${t.ids.attorney}`,
+      worksFor: { '@id': id.office },
+      alumniOf: { '@type': 'CollegeOrUniversity', name: firm.education[lang], url: firm.education.url },
+      memberOf: { '@type': 'Organization', name: firm.bar[lang], url: firm.bar.url },
+      knowsLanguage: 'tr',
+      knowsAbout: t.practice.areas.map((area) => area.title),
+      sameAs: [firm.linkedin],
+    },
+  ],
+};
+---
+
+<!doctype html>
+<html lang={lang} class="no-js">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta
+      name="robots"
+      content={indexable
+        ? 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'
+        : noindex
+          ? 'noindex, follow'
+          : 'noindex, nofollow'}
+    />
+
+    {/* The serif light cut renders the hero headline (the LCP element), so it is preloaded. */}
+    <Font cssVariable="--font-serif" preload={[{ weight: '300', style: 'normal' }]} />
+    <Font cssVariable="--font-sans" />
+
+    {
+      !noindex && (
+        <>
+          <link rel="canonical" href={pageUrl} />
+          <link rel="alternate" hreflang="tr" href={urls.tr} />
+          <link rel="alternate" hreflang="en" href={urls.en} />
+          <link rel="alternate" hreflang="x-default" href={urls.tr} />
+          <link rel="sitemap" type="application/xml" href={withBase('/sitemap-index.xml')} />
+
+          <meta name="author" content={t.brand} />
+          <meta name="geo.region" content={address.region} />
+          <meta name="geo.placename" content={`${address.district}, ${address.city}`} />
+          <meta name="geo.position" content={`${firm.geo.latitude};${firm.geo.longitude}`} />
+          <meta name="ICBM" content={`${firm.geo.latitude}, ${firm.geo.longitude}`} />
+
+          <meta property="og:type" content="website" />
+          <meta property="og:site_name" content={t.brand} />
+          <meta property="og:title" content={title} />
+          <meta property="og:description" content={description} />
+          <meta property="og:url" content={pageUrl} />
+          <meta property="og:locale" content={t.locale} />
+          <meta property="og:locale:alternate" content={lang === 'tr' ? content.en.locale : content.tr.locale} />
+          <meta property="og:image" content={ogImage} />
+          <meta property="og:image:type" content="image/jpeg" />
+          <meta property="og:image:width" content="1200" />
+          <meta property="og:image:height" content="630" />
+          <meta property="og:image:alt" content={t.meta.imageAlt} />
+          <meta name="twitter:card" content="summary_large_image" />
+          <meta name="twitter:title" content={title} />
+          <meta name="twitter:description" content={description} />
+          <meta name="twitter:image" content={ogImage} />
+          <meta name="twitter:image:alt" content={t.meta.imageAlt} />
+
+          {verification.google && <meta name="google-site-verification" content={verification.google} />}
+          {verification.bing && <meta name="msvalidate.01" content={verification.bing} />}
+          {verification.yandex && <meta name="yandex-verification" content={verification.yandex} />}
+        </>
+      )
+    }
+
+    <meta name="theme-color" content="#0b1628" />
+    <meta name="color-scheme" content="dark light" />
+    <link rel="icon" href={withBase('/favicon.ico')} sizes="48x48" />
+    <link rel="icon" href={withBase('/favicon.svg')} type="image/svg+xml" />
+    <link rel="apple-touch-icon" href={withBase('/apple-touch-icon.png')} />
+    <link rel="manifest" href={withBase('/site.webmanifest')} />
+
+    <script is:inline>
+      (function (root) {
+        root.classList.remove('no-js');
+        root.classList.add('js');
+        if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) root.classList.add('motion');
+        try {
+          if (sessionStorage.getItem('kobya-intro')) root.classList.add('intro-seen');
+        } catch (error) {}
+      })(document.documentElement);
+    </script>
+    {!noindex && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

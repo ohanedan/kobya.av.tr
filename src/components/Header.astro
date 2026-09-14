@@ -1,0 +1,85 @@
+---
+import Monogram from './Monogram.astro';
+import LangSwitch from './LangSwitch.astro';
+import { content, type Lang } from '../i18n/content';
+import { firm, links } from '../data/firm';
+import { pad } from '../lib/text';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = content[lang];
+---
+
+<header class="site-header" data-header>
+  <div class="container header-inner">
+    <a class="brand" href="#top">
+      <Monogram class="brand-mark" />
+      <span class="brand-text">
+        <span class="brand-name">Kobya</span>
+        <span class="brand-sub">{t.header.sub}</span>
+      </span>
+    </a>
+
+    <nav class="nav" aria-label={t.header.navLabel}>
+      <ul>
+        {
+          t.nav.map((item) => (
+            <li>
+              <a href={`#${t.ids[item.key]}`} data-nav-link>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="header-actions">
+      <LangSwitch lang={lang} />
+      <a class="btn-pill header-cta" href={`#${t.ids.contact}`}>{t.header.cta}</a>
+      <button
+        class="menu-toggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        aria-label={t.header.menuOpen}
+        data-menu-toggle
+        data-label-open={t.header.menuOpen}
+        data-label-close={t.header.menuClose}
+      >
+        <span class="menu-bar"></span>
+        <span class="menu-bar"></span>
+      </button>
+    </div>
+  </div>
+  <span class="scroll-progress" data-progress aria-hidden="true"></span>
+</header>
+
+<div class="mobile-menu" id="mobile-menu" data-menu hidden>
+  <nav aria-label={t.header.navLabel}>
+    <ol class="mm-links">
+      {
+        t.nav.map((item, index) => (
+          <li>
+            <a href={`#${t.ids[item.key]}`}>
+              <span class="mm-num">{pad(index + 1)}</span>
+              <span class="line">
+                <span class="line-inner">{item.label}</span>
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+  </nav>
+  <div class="mm-footer">
+    <div class="mm-contact">
+      <a href={links.tel}>{firm.phone.display}</a>
+      <a href={links.mail}>{firm.email}</a>
+    </div>
+    <LangSwitch lang={lang} />
+  </div>
+</div>
