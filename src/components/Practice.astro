@@ -1,5 +1,4 @@
 ---
-import SectionLabel from './SectionLabel.astro';
 import Lines from './Lines.astro';
 import { content, type Lang } from '../i18n/content';
 import { pad } from '../lib/text';
@@ -17,44 +16,36 @@ const t = content[lang];
   <div class="container practice-grid">
     <div class="practice-aside">
       <div class="practice-sticky">
-        <SectionLabel num="02" text={t.practice.label} />
         <h2 class="section-title" data-lines><Lines lines={t.practice.titleLines} /></h2>
         <p class="section-intro" data-reveal>{t.practice.intro}</p>
-        <div class="practice-counter" aria-hidden="true">
-          <span class="counter-window"><span class="counter-current" data-practice-current>01</span></span>
-          <span class="counter-total">/ {pad(t.practice.areas.length)}</span>
-        </div>
       </div>
     </div>
 
-    <div>
-      <ol class="practice-list" data-stagger data-practice-list>
-        {
-          t.practice.areas.map((area, index) => (
-            <li class:list={['practice-item', { 'is-open': index === 0 }]} data-practice-item data-stagger-item>
-              <h3>
-                <button
-                  class="practice-head"
-                  type="button"
-                  id={`area-head-${index}`}
-                  aria-expanded={index === 0 ? 'true' : 'false'}
-                  aria-controls={`area-body-${index}`}
-                >
-                  <span class="practice-num">{pad(index + 1)}</span>
-                  <span class="practice-name">{area.title}</span>
-                  <span class="practice-icon" aria-hidden="true" />
-                </button>
-              </h3>
-              <div class="practice-body" id={`area-body-${index}`} role="region" aria-labelledby={`area-head-${index}`}>
-                <div class="practice-body-inner">
-                  <p>{area.text}</p>
-                </div>
+    <ol class="practice-list" data-stagger data-practice-list>
+      {
+        t.practice.areas.map((area, index) => (
+          <li class:list={['practice-item', { 'is-open': index === 0 }]} data-practice-item data-stagger-item>
+            <h3>
+              <button
+                class="practice-head"
+                type="button"
+                id={`area-head-${index}`}
+                aria-expanded={index === 0 ? 'true' : 'false'}
+                aria-controls={`area-body-${index}`}
+              >
+                <span class="practice-num">{pad(index + 1)}</span>
+                <span class="practice-name">{area.title}</span>
+                <span class="practice-icon" aria-hidden="true" />
+              </button>
+            </h3>
+            <div class="practice-body" id={`area-body-${index}`} role="region" aria-labelledby={`area-head-${index}`}>
+              <div class="practice-body-inner">
+                <p>{area.text}</p>
               </div>
-            </li>
-          ))
-        }
-      </ol>
-      <p class="practice-note" data-reveal>{t.practice.note}</p>
-    </div>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
   </div>
 </section>

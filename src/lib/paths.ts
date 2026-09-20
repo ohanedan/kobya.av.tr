@@ -12,5 +12,10 @@ const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
 /** Prefixes a root-relative path ("/en/", "favicon.svg") with the configured base path. */
 export const withBase = (path: string) => `${base}${path.replace(/^\//, '')}`;
 
-/** True only for the real domain build; preview builds must not be indexed. */
-export const isProductionSite = (site: URL | undefined) => site?.origin === PRODUCTION_ORIGIN && base === '/';
+const PRODUCTION_HOST = new URL(PRODUCTION_ORIGIN).host;
+
+/**
+ * True only for the real domain build; preview builds must not be indexed.
+ * Matches on the host, because GitHub reports http:// for a custom domain until "Enforce HTTPS" is on.
+ */
+export const isProductionSite = (site: URL | undefined) => site?.host === PRODUCTION_HOST && base === '/';

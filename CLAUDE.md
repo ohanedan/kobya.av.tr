@@ -7,11 +7,11 @@ or finish an open item.
 ## Project
 
 - **What:** a single-page, bilingual website for **Kobya Hukuk Bürosu / Kobya Law Office**, the law
-  office of **Av. Vedat Murathan Kobya** in Gölbaşı, Ankara (founded 2023, admitted 2022, Ankara Bar).
+  office of **Av. Vedat Murathan Kobya** in Gölbaşı, Ankara, registered with the Ankara Bar. Two
+  attorneys and one consultant (see `content.<lang>.team`).
 - **Who:** maintained by Ozan Hanedan (the attorney's cousin) in `github.com/ohanedan/kobya.av.tr`.
-- **Where:** `https://kobya.av.tr` via GitHub Pages; DNS managed by Ozan on Cloudflare. The apex
-  domain is canonical, `www` redirects to it. Until the domain's DNS is live, the site is served as
-  a `noindex` preview at `https://ohanedan.github.io/kobya.av.tr/` (see "Deployment").
+- **Where:** live at `https://kobya.av.tr` via GitHub Pages since 2026-09-20; DNS on Cloudflare.
+  The apex domain is canonical; `www`, plain http and the old github.io path all redirect to it.
 - **Languages:** Turkish is the default at `/`, English lives at `/en/`.
 
 ## Hard rules
@@ -24,15 +24,19 @@ These come from the client or from law. Do not change them without an explicit r
 2. **No cookies, no tracking, no third-party requests on page load.** No analytics. Fonts are
    self-hosted. Google Maps loads only after the visitor clicks "Show map". The footer tells
    visitors this, so the claim must stay true.
-3. **No contact form.** Contact is phone, WhatsApp and e-mail links only.
+3. **No contact form.** Contact is phone, WhatsApp and e-mail links only. The attorney asked for one
+   on 2026-09-20 and the maintainer declined the same day, so the site collects no visitor data and
+   the cookie-free claim in the footer stays simple.
 4. **No attorney photo or office photos.** The monogram emblem is the visual identity.
-5. **The attorney works in Turkish only** and does not target foreign clients. The English page says
-   meetings are conducted in Turkish; never imply otherwise.
-6. **English copy uses no gendered pronouns** for the attorney. Use the name or "Kobya".
-7. **English for all code, comments and documentation.** Conversation with the maintainer happens in
+5. **Never state when the office was founded.** No founding year, no "since", no roman-numeral year
+   on the emblem, no `foundingDate` in the structured data. Client request, 2026-09-20.
+6. **The office works in Turkish**, with English (B2) and German (C1) within the team (Aykut Sait
+   Hanedan). Do not promise service in other languages, and do not claim a Turkish-only practice.
+7. **English copy uses no gendered pronouns** for any team member. Use the name or the surname.
+8. **English for all code, comments and documentation.** Conversation with the maintainer happens in
    Turkish, but the repo is English. Only the page copy in `src/i18n/content.ts` is bilingual.
-8. **Single page.** Do not split into sub-pages unless asked (see "Open items").
-9. **Licensing.** The repo is public under the custom, bilingual **Kobya Attribution License 1.0**
+9. **Single page.** Do not split into sub-pages unless asked (see "Open items").
+10. **Licensing.** The repo is public under the custom, bilingual **Kobya Attribution License 1.0**
    (`LICENSE`). It is source-available rather than OSI open source. The **licensor and copyright
    holder is Av. Vedat Murathan Kobya**, not the maintainer. Attribution notices name the attorney.
    - Parts may be reused, with visible credit and a source notice, in clearly different work.
@@ -74,22 +78,23 @@ Scripts that drive a browser use Edge on Windows and Chrome elsewhere. Override 
 ```
 astro.config.mjs          site/base from SITE_URL + BASE_PATH, i18n routing, Fonts API, sitemap, CNAME writer
 src/
-  data/firm.ts            NAP, geo, hours, bar, education: facts shared by both languages
+  data/firm.ts            NAP, geo, opening hours, bar, education, LinkedIn URLs, footer resources
   data/seo.ts             optional search-engine verification meta tokens
   i18n/content.ts         all copy (TR + EN), section ids per language, practice areas
   layouts/Base.astro      <head>: meta, canonical/hreflang, OG/Twitter, geo, JSON-LD @graph, fonts
   components/
     Site.astro            page composition, used by pages/index.astro and pages/en/index.astro
-    Preloader, Header (+ mobile menu), LangSwitch, Hero, Office, Practice,
-    Attorney (emblem), Approach (horizontal pin), Contact (channels + map facade), Footer
-    Monogram, Lines (masked line reveals), SectionLabel
+    Preloader, Header (+ mobile menu), LangSwitch, Hero, Office (principles),
+    Practice, Team (emblem + three people), Approach (horizontal pin),
+    Contact (channels, hours, map facade), Footer (links + practice statement)
+    Monogram, Lines (masked line reveals)
   pages/
     index.astro, en/index.astro, 404.astro (noindex)
     llms.txt.ts           generates /llms.txt from firm.ts and content.ts
     robots.txt.ts         generates /robots.txt with a base-aware sitemap URL
   scripts/main.ts         all client-side behaviour
   styles/global.css       design tokens and all styles (no scoped component styles)
-  lib/text.ts             *emphasis* markers, word splitting, padding, roman numerals
+  lib/text.ts             *emphasis* markers and zero-padded numbers
   lib/paths.ts            withBase() for every internal URL; isProductionSite()
 public/                   site.webmanifest (relative icon paths), favicons, icons, og images
 scripts/
@@ -108,7 +113,10 @@ LICENSE                   Kobya Attribution License 1.0 (English + Turkish; Turk
 - **Copy** goes in `src/i18n/content.ts`. `*word*` renders a brass italic accent. `tr` and `en` share
   one type, so a missing translation is a type error.
 - **Section ids differ per language** (`#calisma-alanlari` and `#practice`). The language switch maps
-  the current section through `ids`, so rename ids in both languages together.
+  the current section through `ids`, so rename ids in both languages together. Navigation items use
+  `nav[].key`, where `top` means the hero and every other key is a section id.
+- **Team members** live in `content.<lang>.team.members`; their LinkedIn URLs live in
+  `firm.linkedin`, keyed by the same `key`. A member without a URL simply shows no profile link.
 - **Title and description limits:** titles should be 30–65 characters and descriptions 70–160.
   `check:seo` warns outside those ranges.
 - **After changing brand text** used in the OG images, run `npm run images`.
@@ -124,8 +132,10 @@ LICENSE                   Kobya Attribution License 1.0 (English + Turkish; Turk
   add weights casually. Manrope Variable is the UI and body font. Serif display numerals use
   `font-variant-numeric: lining-nums`, because old-style "01" reads as "OI".
 - **Signature elements:** the "K" monogram, drawn with `pathLength=1` so its strokes can animate; the
-  rotating seal ring on the attorney emblem; outline numerals; the brass fill sweep on hover; and the
-  footer "KOBYA" wordmark that fills on scroll.
+  rotating seal ring on the team emblem; outline numerals; and the brass fill sweep on hover.
+- **Alignment:** the client asked for a strictly tidy layout, so sections share one rhythm — the
+  5fr/7fr aside-and-list grid for practice and team, centred principles, one hairline per group, and
+  no decorative indents.
 
 ## Motion architecture and gotchas
 
@@ -145,10 +155,11 @@ LICENSE                   Kobya Attribution License 1.0 (English + Turkish; Turk
   - Hero copy (`data-hero-rise`) slides in but is never transparent, so it paints on first render
     and serves as the LCP element. Only the CTA uses `data-hero-fade`.
   - The preloader timeline is kept to about 2 s.
-  - Statement words (`data-words`) dim only once the paragraph enters the viewport, so the page as
-    loaded passes contrast audits. Scrolling behaviour is unchanged.
 - **Layout-dependent effects:**
-  - The Approach section pins and scrolls horizontally only at ≥ 900 px.
+  - The Approach section pins and scrolls horizontally only at ≥ 900 px. The pinned distance is
+    55% of the track width, because the client found a 1:1 scroll too slow.
+  - The team emblem is sticky, so its stroke-draw scrub has to finish early (`top 35%`); otherwise
+    visitors see a half-drawn monogram.
   - A ResizeObserver on `<main>` debounces `ScrollTrigger.refresh()`, which covers accordion height
     changes and font swaps.
 - **Navigation:** in-page anchors go through `scrollToTarget()` (Lenis-aware) and move focus to the
@@ -181,7 +192,8 @@ languages describe the same entities:
 **Semantics:**
 
 - Exactly one `<h1>` (the hero headline, with the brand in a visually hidden prefix).
-- Every section has an `<h2>`; the office section uses `SectionLabel heading`.
+- Every section has an `<h2>`: the office section uses "İlkelerimiz", the contact section a visually
+  hidden "İletişim", and the footer one per panel. The client removed every numbered section label.
 - No skipped heading levels.
 - NAP is visible in the contact section and the footer.
 
@@ -249,12 +261,18 @@ Local search ("Gölbaşı avukat", "Ankara avukat") is driven mostly by these:
 - **The build follows wherever Pages serves the repo.** `configure-pages` reports the origin and base
   path, and the workflow passes them to Astro as `SITE_URL` and `BASE_PATH`. Local builds without
   these variables target the production domain.
-  - **No custom domain set yet**, which is the current state: the site builds for
-    `https://ohanedan.github.io` + `/kobya.av.tr`. Pages get `noindex, nofollow`, no `CNAME` is
-    written, and canonical, hreflang, OG and sitemap URLs point at the preview URL.
-  - **Custom domain set** in Settings → Pages: the site builds for `https://kobya.av.tr` + `/`. Pages
-    become indexable, `dist/CNAME` is written by the `kobya:cname` integration, and GitHub redirects
-    the old github.io URL to the domain.
+  - **No custom domain set**: the site builds for `https://ohanedan.github.io` + `/kobya.av.tr`.
+    Pages get `noindex, nofollow`, no `CNAME` is written, and canonical, hreflang, OG and sitemap
+    URLs point at the preview URL.
+  - **Custom domain set** in Settings → Pages, the current state: the site builds for
+    `https://kobya.av.tr` + `/`. Pages become indexable, `dist/CNAME` is written by the
+    `kobya:cname` integration, and GitHub redirects the old github.io URL to the domain.
+  - **Protocol trap (fixed 2026-09-20):** `configure-pages` reports `http://kobya.av.tr` until
+    GitHub's *Enforce HTTPS* is switched on. The production check therefore matches on the **host**
+    and forces `https:`, in `astro.config.mjs`, `src/lib/paths.ts` and `scripts/validate-seo.mjs`
+    alike. Before that fix the live site shipped `noindex, nofollow` and an `http://` canonical even
+    though the domain was serving correctly. If these three ever disagree, the site silently
+    de-indexes itself, so change them together.
   - `check:seo` enforces both modes: indexable with a CNAME in production, `noindex` without a CNAME
     in preview.
 - **Code rule:** never hard-code root-relative URLs (`"/en/"`, `"/favicon.svg"`). Use `withBase()`
@@ -273,6 +291,8 @@ Local search ("Gölbaşı avukat", "Ankara avukat") is driven mostly by these:
     it earlier, or the github.io preview will redirect to a domain that does not resolve.
   - Enable *Enforce HTTPS* once the certificate exists.
   - Verify the domain under account Settings → Pages → Verified domains.
+- **HTTPS redirect:** the maintainer sets the HTTP → HTTPS redirect in Cloudflare; nothing in this
+  repo handles it.
 - **Cloudflare DNS** (DNS only, grey cloud):
   - Four `A` records for `@`: `185.199.108.153`, `.109.153`, `.110.153`, `.111.153`.
   - Four `AAAA` records for `@`: `2606:50c0:8000::153` through `2606:50c0:8003::153`.
@@ -347,9 +367,36 @@ Before calling a change done:
     the firm e-mail. Because the maintainer wrote the code, a written assignment of economic rights
     to the attorney is advisable (FSEK art. 52 requires written form).
   - GitHub shows it as "Other" because it is not OSI-approved. The attorney should review the text.
+- **2026-09-20, client revision round** (a review document from the attorney, applied item by item):
+  - Hero headline is now "Münakaşadan müzakere"; the eyebrow and the "Ankara · Kuruluş" line are gone.
+  - Every mention of the founding year was removed, including the emblem's MMXXIII (hard rule 5).
+  - The office section lost its numbered label and its display statement; the principles are centred
+    under a single hairline, with no roman numerals.
+  - Practice areas: "Şirketler Hukuku ve Regülasyon" and "Sözleşmeler Hukuku" merged into
+    "Sözleşmeler Hukuku ve Mevzuat Uyum"; all descriptions replaced; the counter and the closing note
+    removed. Five areas remain.
+  - The attorney section became the team section: Av. Vedat Murathan Kobya, Av. Aykut Sait Hanedan and
+    consultant Refik Cemal Hanedan, each with a LinkedIn link under the biography. The facts list,
+    the "Kurucu Avukat" role and the emblem caption are gone.
+  - Navigation is Anasayfa / Çalışma Alanları / Ekibimiz / İletişim; "Süreç" is no longer linked but
+    the section stays.
+  - Contact: no label, no display headline, opening hours listed per day (Saturday 10.00–15.00,
+    Sunday closed), the bar block removed.
+  - Footer: the giant "KOBYA" wordmark was replaced by the "Serbest Avukat Beyanı" statement, plus a
+    "Diğer Bağlantılar" list of seven public legal resources.
+  - The English contact lead no longer claims meetings are held in Turkish, because the team now
+    includes English and German speakers.
+  - The maintainer declined the requested contact form the same day; the phone/WhatsApp/e-mail
+    buttons stay (hard rule 3).
+- **2026-09-20, indexing fix:** the live domain was serving the site while the published HTML still
+  said `noindex, nofollow` with an `http://` canonical, because `configure-pages` had reported the
+  http origin. The production check now matches on host and forces https (see "Deployment"). Verified
+  by building with `SITE_URL=http://kobya.av.tr`, with the default, and with the github.io preview.
 
 ## Open items and ideas
 
+- **A KVKK notice** may still arrive from the attorney. Without a form the site collects nothing, so
+  such a text would be informational only; decide with the maintainer where it should live.
 - **Practice-area sub-pages** (e.g. `/icra-iflas-hukuku/`) would be the next big organic-search
   lever, but they contradict the single-page brief. Ask before doing this.
 - **An FAQ section** would help long-tail and AI-answer visibility, but it needs real answers from the

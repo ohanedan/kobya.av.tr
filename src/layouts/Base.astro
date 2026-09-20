@@ -37,10 +37,30 @@ const htmlLang = lang === 'tr' ? 'tr-TR' : 'en-US';
 const id = {
   website: `${urls.tr}#website`,
   office: `${urls.tr}#office`,
-  attorney: `${urls.tr}#attorney`,
   webpage: `${pageUrl}#webpage`,
 };
 const { address } = firm;
+
+const personId = (key: string) => `${urls.tr}#person-${key}`;
+const profiles = firm.linkedin as Record<string, string | undefined>;
+
+const people = t.team.members.map((member) => ({
+  '@type': 'Person',
+  '@id': personId(member.key),
+  name: member.name,
+  jobTitle: member.role,
+  url: `${pageUrl}#${t.ids.team}`,
+  worksFor: { '@id': id.office },
+  ...(profiles[member.key] ? { sameAs: [profiles[member.key]] } : {}),
+  ...(member.key === 'vedat'
+    ? {
+        honorificPrefix: 'Av.',
+        alumniOf: { '@type': 'CollegeOrUniversity', name: firm.education[lang], url: firm.education.url },
+        memberOf: { '@type': 'Organization', name: firm.bar[lang], url: firm.bar.url },
+        knowsLanguage: 'tr',
+      }
+    : {}),
+}));
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -78,9 +98,11 @@ const jsonLd = {
       image: ogImage,
       telephone: firm.phone.tel,
       email: firm.email,
-      foundingDate: String(firm.founded),
-      founder: { '@id': id.attorney },
-      employee: { '@id': id.attorney },
+      founder: { '@id': personId('vedat') },
+      employee: t.team.members
+        .filter((member) => member.key !== 'refik')
+        .map((member) => ({ '@id': personId(member.key) })),
+      member: [{ '@id': personId('refik') }],
       address: {
         '@type': 'PostalAddress',
         streetAddress: address.street,
@@ -91,12 +113,12 @@ const jsonLd = {
       },
       geo: { '@type': 'GeoCoordinates', latitude: firm.geo.latitude, longitude: firm.geo.longitude },
       hasMap: links.maps,
-      openingHoursSpecification: {
+      openingHoursSpecification: firm.openingHours.map((slot) => ({
         '@type': 'OpeningHoursSpecification',
-        dayOfWeek: firm.openingHours.days.map((day) => `https://schema.org/${day}`),
-        opens: firm.openingHours.opens,
-        closes: firm.openingHours.closes,
-      },
+        dayOfWeek: slot.days.map((day) => `https://schema.org/${day}`),
+        opens: slot.opens,
+        closes: slot.closes,
+      })),
       areaServed: [
         { '@type': 'City', name: address.city },
         { '@type': 'Country', name: 'Türkiye' },
@@ -105,7 +127,7 @@ const jsonLd = {
       knowsAbout: t.practice.areas.map((area) => area.title),
       hasOfferCatalog: {
         '@type': 'OfferCatalog',
-        name: t.practice.label,
+        name: t.nav[1].label,
         itemListElement: t.practice.areas.map((area) => ({
           '@type': 'Offer',
           itemOffered: { '@type': 'Service', name: area.title, description: area.text, provider: { '@id': id.office } },
@@ -120,20 +142,7 @@ const jsonLd = {
         areaServed: 'TR',
       },
     },
-    {
-      '@type': 'Person',
-      '@id': id.attorney,
-      name: firm.attorney,
-      honorificPrefix: 'Av.',
-      jobTitle: t.attorney.role,
-      url: `${pageUrl}#${t.ids.attorney}`,
-      worksFor: { '@id': id.office },
-      alumniOf: { '@type': 'CollegeOrUniversity', name: firm.education[lang], url: firm.education.url },
-      memberOf: { '@type': 'Organization', name: firm.bar[lang], url: firm.bar.url },
-      knowsLanguage: 'tr',
-      knowsAbout: t.practice.areas.map((area) => area.title),
-      sameAs: [firm.linkedin],
-    },
+    ...people,
   ],
 };
 ---

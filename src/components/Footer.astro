@@ -1,7 +1,7 @@
 ---
 import Monogram from './Monogram.astro';
-import { content, type Lang } from '../i18n/content';
-import { firm, links } from '../data/firm';
+import { content, type Lang, type NavKey } from '../i18n/content';
+import { firm, links, resources } from '../data/firm';
 
 interface Props {
   lang: Lang;
@@ -10,6 +10,7 @@ interface Props {
 const { lang } = Astro.props;
 const t = content[lang];
 const year = new Date().getFullYear();
+const navHref = (key: NavKey) => (key === 'top' ? '#top' : `#${t.ids[key]}`);
 ---
 
 <footer class="site-footer">
@@ -27,7 +28,7 @@ const year = new Date().getFullYear();
           {
             t.nav.map((item) => (
               <li>
-                <a href={`#${t.ids[item.key]}`}>{item.label}</a>
+                <a href={navHref(item.key)}>{item.label}</a>
               </li>
             ))
           }
@@ -52,14 +53,30 @@ const year = new Date().getFullYear();
       <a href={links.mail}>{firm.email}</a>
     </address>
 
-    <div class="footer-wordmark" aria-hidden="true">
-      <span class="wm-outline">KOBYA</span>
-      <span class="wm-fill" data-wordmark-fill>KOBYA</span>
+    <div class="footer-panels">
+      <section class="footer-panel footer-resources">
+        <h2 class="meta-label">{t.footer.resourcesTitle}</h2>
+        <ul class="resource-list">
+          {
+            resources.map((resource) => (
+              <li>
+                <a href={resource.url} target="_blank" rel="noopener noreferrer">
+                  {resource.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+
+      <section class="footer-panel footer-declaration">
+        <h2 class="meta-label">{t.footer.declarationTitle}</h2>
+        <p>{t.footer.declaration}</p>
+      </section>
     </div>
 
     <div class="footer-bottom">
       <p>© {year} {t.brand}. {t.footer.rights}</p>
-      <p class="footer-disclaimer">{t.footer.disclaimer}</p>
       <p>{t.footer.privacy}</p>
     </div>
   </div>

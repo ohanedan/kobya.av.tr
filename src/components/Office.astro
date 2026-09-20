@@ -1,7 +1,5 @@
 ---
-import SectionLabel from './SectionLabel.astro';
 import { content, type Lang } from '../i18n/content';
-import { roman, words } from '../lib/text';
 
 interface Props {
   lang: Lang;
@@ -13,19 +11,12 @@ const t = content[lang];
 
 <section class="section section-light office" id={t.ids.office} data-section="office">
   <div class="container">
-    <SectionLabel num="01" text={t.office.label} heading />
-
-    <p class="statement" data-words>
-      {words(t.office.statement).map((word) => <span class="w" set:html={`${word} `} />)}
-    </p>
-
-    <p class="small-label principles-label" data-reveal>{t.office.principlesLabel}</p>
+    <h2 class="principles-label" data-reveal>{t.office.principlesLabel}</h2>
     <div class="principles" data-stagger>
+      <span class="principles-rule" data-rule aria-hidden="true"></span>
       {
-        t.office.principles.map((principle, index) => (
+        t.office.principles.map((principle) => (
           <article class="principle" data-stagger-item>
-            <span class="principle-rule" data-rule aria-hidden="true" />
-            <span class="principle-num">{roman[index]}</span>
             <h3 class="principle-title">{principle.title}</h3>
             <p>{principle.text}</p>
           </article>

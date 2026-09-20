@@ -1,5 +1,4 @@
 ---
-import SectionLabel from './SectionLabel.astro';
 import Lines from './Lines.astro';
 import { content, type Lang } from '../i18n/content';
 import { pad } from '../lib/text';
@@ -16,7 +15,6 @@ const t = content[lang];
   <div class="approach-pin" data-approach-pin>
     <div class="container approach-head">
       <div>
-        <SectionLabel num="04" text={t.approach.label} />
         <h2 class="section-title approach-title" data-lines><Lines lines={t.approach.titleLines} /></h2>
       </div>
       <div class="approach-aside">

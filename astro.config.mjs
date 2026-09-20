@@ -8,9 +8,15 @@ const PRODUCTION_ORIGIN = 'https://kobya.av.tr';
 // The deploy workflow sets these from actions/configure-pages: https://ohanedan.github.io + /kobya.av.tr
 // until a custom domain is configured in the repository's Pages settings, then https://kobya.av.tr + "".
 // Local builds default to the production domain.
-const site = process.env.SITE_URL || PRODUCTION_ORIGIN;
+const PRODUCTION_HOST = new URL(PRODUCTION_ORIGIN).host;
+
+// actions/configure-pages reports "http://kobya.av.tr" until GitHub's "Enforce HTTPS" is switched on,
+// so match on the host and always publish https URLs for the real domain.
+const requested = new URL(process.env.SITE_URL || PRODUCTION_ORIGIN);
+if (requested.host === PRODUCTION_HOST) requested.protocol = 'https:';
+const site = requested.origin;
 const base = process.env.BASE_PATH || '/';
-const isProduction = new URL(site).origin === PRODUCTION_ORIGIN && base === '/';
+const isProduction = requested.host === PRODUCTION_HOST && base === '/';
 
 /** Writes dist/CNAME for the real domain only, so a preview build never claims kobya.av.tr. */
 const cname = {

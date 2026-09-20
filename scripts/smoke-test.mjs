@@ -59,7 +59,6 @@ try {
     await page.waitForTimeout(900);
     check('accordion opens the clicked area', (await page.getAttribute('#area-head-2', 'aria-expanded')) === 'true');
     check('accordion closes the previously open area', (await page.getAttribute('#area-head-0', 'aria-expanded')) === 'false');
-    check('practice counter follows the open area', (await page.textContent('[data-practice-current]')) === '03');
 
     // The header hides while scrolling down, so trigger links programmatically from here on.
     await page.evaluate(() => document.querySelector('.header-actions [data-lang-link][hreflang="en"]').click());
@@ -87,10 +86,10 @@ try {
     await page.waitForTimeout(3500);
     await page.click('[data-menu-toggle]');
     await page.waitForTimeout(900);
-    await page.click('#mobile-menu a[href="#avukat"]');
+    await page.click('#mobile-menu a[href="#ekibimiz"]');
     await page.waitForTimeout(2500);
     check('mobile menu closes after choosing a link', (await page.getAttribute('[data-menu-toggle]', 'aria-expanded')) === 'false');
-    check('mobile menu link scrolls to its section', Math.abs(await topOf(page, 'avukat')) < 5);
+    check('mobile menu link scrolls to the team section', Math.abs(await topOf(page, 'ekibimiz')) < 5);
     check(
       'no horizontal overflow on mobile',
       await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),

@@ -257,29 +257,6 @@ function initScrollMotion() {
     });
   });
 
-  // Word-by-word highlight of the statement. Words stay fully opaque until the paragraph enters the
-  // viewport, so the page as loaded keeps full text contrast (accessibility audits run at load time).
-  $$('[data-words]').forEach((statement) => {
-    const words = $$('.w', statement);
-    ScrollTrigger.create({
-      trigger: statement,
-      start: 'top bottom',
-      once: true,
-      onEnter: () => void gsap.set(words, { opacity: 0.14 }),
-    });
-    gsap.fromTo(
-      words,
-      { opacity: 0.14 },
-      {
-        opacity: 1,
-        ease: 'none',
-        stagger: 0.05,
-        immediateRender: false,
-        scrollTrigger: { trigger: statement, start: 'top 80%', end: 'bottom 45%', scrub: 0.6 },
-      },
-    );
-  });
-
   // Staggered groups (principles, list rows, contact channels…).
   $$('[data-stagger]').forEach((group) => {
     const items = $$('[data-stagger-item]', group);
@@ -318,7 +295,7 @@ function initScrollMotion() {
         strokeDashoffset: 0,
         ease: 'none',
         stagger: 0.12,
-        scrollTrigger: { trigger: emblem, start: 'top 70%', end: 'center 40%', scrub: 1 },
+        scrollTrigger: { trigger: emblem, start: 'top 85%', end: 'top 35%', scrub: 1 },
       },
     );
     gsap.fromTo(
@@ -333,19 +310,6 @@ function initScrollMotion() {
     );
   }
 
-  // Footer wordmark fills in as the page ends.
-  const fill = $('[data-wordmark-fill]');
-  if (fill?.parentElement) {
-    gsap.fromTo(
-      fill,
-      { clipPath: 'inset(0% 100% 0% 0%)' },
-      {
-        clipPath: 'inset(0% 0% 0% 0%)',
-        ease: 'none',
-        scrollTrigger: { trigger: fill.parentElement, start: 'top 92%', end: 'bottom bottom', scrub: 0.8 },
-      },
-    );
-  }
 }
 
 function initApproach() {
@@ -364,9 +328,9 @@ function initApproach() {
       scrollTrigger: {
         trigger: pin,
         start: 'top top',
-        end: () => `+=${distance()}`,
+        end: () => `+=${distance() * 0.55}`,
         pin: true,
-        scrub: 0.8,
+        scrub: 0.4,
         invalidateOnRefresh: true,
         onUpdate: (self) => {
           if (bar) bar.style.transform = `scaleX(${self.progress})`;
@@ -402,29 +366,6 @@ function initMarquee() {
 
 function initPractice() {
   const items = $$('[data-practice-item]');
-  const counter = $('[data-practice-current]');
-  const list = $('[data-practice-list]');
-  let shown = 0;
-
-  const showCounter = (index: number) => {
-    if (!counter || index === shown || index < 0) return;
-    const direction = index > shown ? 1 : -1;
-    shown = index;
-    const label = String(index + 1).padStart(2, '0');
-
-    if (!motion) {
-      counter.textContent = label;
-      return;
-    }
-    gsap.killTweensOf(counter);
-    gsap
-      .timeline()
-      .to(counter, { yPercent: -100 * direction, duration: 0.25, ease: 'power2.in' })
-      .add(() => {
-        counter.textContent = label;
-      })
-      .fromTo(counter, { yPercent: 100 * direction }, { yPercent: 0, duration: 0.6, ease: 'expo.out' });
-  };
 
   const setOpen = (item: HTMLElement, open: boolean) => {
     item.classList.toggle('is-open', open);
@@ -437,15 +378,9 @@ function initPractice() {
       const open = !item.classList.contains('is-open');
       items.forEach((other) => other !== item && setOpen(other, false));
       setOpen(item, open);
-      showCounter(index);
     });
-    item.addEventListener('pointerenter', () => showCounter(index));
-    button?.addEventListener('focus', () => showCounter(index));
   });
 
-  list?.addEventListener('pointerleave', () => {
-    showCounter(items.findIndex((item) => item.classList.contains('is-open')));
-  });
 }
 
 function initPointerEffects() {

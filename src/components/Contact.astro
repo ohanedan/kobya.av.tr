@@ -1,7 +1,5 @@
 ---
 import Monogram from './Monogram.astro';
-import SectionLabel from './SectionLabel.astro';
-import Lines from './Lines.astro';
 import { content, type Lang } from '../i18n/content';
 import { firm, links } from '../data/firm';
 
@@ -44,11 +42,8 @@ const arrow =
   </div>
 
   <div class="container">
-    <SectionLabel num="05" text={t.contact.label} />
-    <div class="contact-head">
-      <h2 class="contact-title" data-lines><Lines lines={t.contact.titleLines} /></h2>
-      <p class="contact-lead" data-reveal>{t.contact.lead}</p>
-    </div>
+    <h2 class="sr-only">{t.contact.heading}</h2>
+    <p class="contact-lead" data-reveal>{t.contact.lead}</p>
 
     <ul class="channels" data-stagger>
       {
@@ -75,7 +70,7 @@ const arrow =
 
     <div class="contact-info">
       <div class="meta-list" data-stagger>
-        <div class="meta-block meta-wide" data-stagger-item>
+        <div class="meta-block" data-stagger-item>
           <h3 class="meta-label">{t.contact.address}</h3>
           <address class="meta-value">
             {firm.address.street}<br />
@@ -89,18 +84,14 @@ const arrow =
         </div>
         <div class="meta-block" data-stagger-item>
           <h3 class="meta-label">{t.contact.hours}</h3>
-          <p class="meta-value">{firm.hours[lang]}</p>
-        </div>
-        <div class="meta-block" data-stagger-item>
-          <h3 class="meta-label">{t.contact.bar}</h3>
-          <p class="meta-value">{firm.bar[lang]}</p>
-        </div>
-        <div class="meta-block meta-wide" data-stagger-item>
-          <h3 class="meta-label">{t.contact.social}</h3>
-          <a class="text-link" href={firm.linkedin} target="_blank" rel="noopener noreferrer">
-            {t.contact.socialAction}
-            <Fragment set:html={arrow} />
-          </a>
+          <dl class="hours">
+            {t.contact.hoursRows.map((row) => (
+              <div class="hours-row">
+                <dt>{row.day}</dt>
+                <dd>{row.value}</dd>
+              </div>
+            ))}
+          </dl>
         </div>
       </div>
 

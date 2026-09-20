@@ -11,10 +11,15 @@
 import { access, readFile } from 'node:fs/promises';
 
 const PRODUCTION_ORIGIN = 'https://kobya.av.tr';
-const ORIGIN = new URL(process.env.SITE_URL || PRODUCTION_ORIGIN).origin;
-const BASE = (process.env.BASE_PATH || '').replace(/\/+$/, '');
+const PRODUCTION_HOST = new URL(PRODUCTION_ORIGIN).host;
+// Same normalisation as astro.config.mjs: the real domain is always https, whatever GitHub reports
+// while "Enforce HTTPS" is still off.
+const requested = new URL(process.env.SITE_URL || PRODUCTION_ORIGIN);
+if (requested.host === PRODUCTION_HOST) requested.protocol = 'https:';
+const ORIGIN = requested.origin;
+const BASE = (process.env.BASE_PATH || '').replace(/[/]+$/, '');
 const SITE = `${ORIGIN}${BASE}`;
-const PRODUCTION = ORIGIN === PRODUCTION_ORIGIN && BASE === '';
+const PRODUCTION = requested.host === PRODUCTION_HOST && BASE === '';
 
 const dist = new URL('../dist/', import.meta.url);
 const pages = [

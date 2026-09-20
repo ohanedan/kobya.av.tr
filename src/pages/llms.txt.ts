@@ -17,9 +17,8 @@ export const GET: APIRoute = ({ site }) => {
     '',
     `> ${en.meta.description}`,
     '',
-    `Law office of attorney ${firm.attorney}, a member of the ${firm.bar.en}. Admitted to practice in ${firm.admitted}; ` +
-      `the office was founded in ${firm.founded} in ${address.district}, ${address.city}, Türkiye. ` +
-      'Meetings are by appointment and are conducted in Turkish.',
+    `Law office of attorney ${firm.attorney}, a member of the ${firm.bar.en}, in ${address.district}, ` +
+      `${address.city}, Türkiye. Meetings are held by appointment.`,
     '',
     '## Pages',
     '',
@@ -30,23 +29,23 @@ export const GET: APIRoute = ({ site }) => {
     '',
     ...en.practice.areas.map((area, index) => `- ${area.title} (${tr.practice.areas[index].title}): ${area.text}`),
     '',
-    '## Attorney',
+    '## Team',
     '',
-    `- Name: ${firm.attorney} (Av. ${firm.attorney})`,
-    `- Bar: ${firm.bar.en}`,
-    `- Education: ${firm.education.en}`,
-    `- LinkedIn: ${firm.linkedin}`,
+    ...en.team.members.map((member, index) => {
+      const profile = (firm.linkedin as Record<string, string | undefined>)[member.key];
+      return `- ${member.name} — ${member.role} (${tr.team.members[index].role})${profile ? `, ${profile}` : ''}`;
+    }),
     '',
     '## Contact',
     '',
     `- Address: ${address.street}, ${address.postalCode} ${address.district}/${address.city}, Türkiye`,
     `- Phone / WhatsApp: ${firm.phone.display}`,
     `- E-mail: ${firm.email}`,
-    `- Office hours: ${firm.hours.en}, by appointment`,
+    ...en.contact.hoursRows.map((row) => `- ${row.day}: ${row.value}`),
     '',
     '## Notice',
     '',
-    en.footer.disclaimer,
+    en.footer.declaration,
     '',
   ].join('\n');
 

@@ -4,6 +4,9 @@
  *
  * Keep NAP details identical to the Google Business Profile, LinkedIn and bar listings —
  * consistent NAP is a local-SEO ranking signal.
+ *
+ * Note: the site must not state when the office was founded (client request), so no founding
+ * year or "since" marker belongs in this file.
  */
 
 export const firm = {
@@ -12,15 +15,16 @@ export const firm = {
   attorney: 'Vedat Murathan Kobya',
   url: 'https://kobya.av.tr',
 
-  founded: 2023,
-  foundedRoman: 'MMXXIII',
-  admitted: 2022,
-
   phone: { display: '+90 530 672 06 61', tel: '+905306720661' },
   /** International format without "+" or spaces, as wa.me expects. */
   whatsapp: '905306720661',
   email: 'murathankobyaa@gmail.com',
-  linkedin: 'https://www.linkedin.com/in/vedat-murathan-kobya-336b22262/',
+
+  /** Personal profiles, shown under each team member's biography. */
+  linkedin: {
+    vedat: 'https://www.linkedin.com/in/vedat-murathan-kobya-336b22262/',
+    aykut: 'https://www.linkedin.com/in/sait-aykut-hanedan-a8b484173/',
+  },
 
   address: {
     street: 'Kızılcaşar Mah. 1209. Sok. No: 11/41',
@@ -36,12 +40,11 @@ export const firm = {
   /** Coordinates Google Maps resolves for `address.mapsQuery`. */
   geo: { latitude: 39.8243636, longitude: 32.7204337 },
 
-  hours: { tr: 'Hafta içi 09.00 – 18.00', en: 'Weekdays 09:00 – 18:00' },
-  openingHours: {
-    days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
-    opens: '09:00',
-    closes: '18:00',
-  },
+  /** Structured-data form of the opening hours rendered in src/i18n/content.ts. */
+  openingHours: [
+    { days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'], opens: '09:00', closes: '18:00' },
+    { days: ['Saturday'], opens: '10:00', closes: '15:00' },
+  ],
 
   bar: { tr: 'Ankara Barosu', en: 'Ankara Bar Association', url: 'https://www.ankarabarosu.org.tr' },
   education: {
@@ -50,6 +53,17 @@ export const firm = {
     url: 'https://www.atilim.edu.tr',
   },
 } as const;
+
+/** Public legal resources linked in the footer. Names are official, so they are not translated. */
+export const resources = [
+  { label: 'e-Devlet Kapısı', url: 'https://www.turkiye.gov.tr' },
+  { label: 'UYAP Vatandaş Portalı', url: 'https://vatandas.uyap.gov.tr' },
+  { label: 'Mevzuat Bilgi Sistemi', url: 'https://www.mevzuat.gov.tr' },
+  { label: 'Türkiye Barolar Birliği', url: 'https://www.barobirlik.org.tr' },
+  { label: 'Mağdur Bilgi Sistemi', url: 'https://magdurbilgi.adalet.gov.tr' },
+  { label: 'Yargıtay İçtihat Merkezi', url: 'https://www.yargitayictihatmerkezi.gov.tr' },
+  { label: 'Gelincik Projesi', url: 'https://www.gelincikprojesi.org.tr' },
+] as const;
 
 const query = encodeURIComponent(firm.address.mapsQuery);
 

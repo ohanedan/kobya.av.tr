@@ -1,7 +1,7 @@
 ---
 import Monogram from './Monogram.astro';
 import LangSwitch from './LangSwitch.astro';
-import { content, type Lang } from '../i18n/content';
+import { content, type Lang, type NavKey } from '../i18n/content';
 import { firm, links } from '../data/firm';
 import { pad } from '../lib/text';
 
@@ -11,6 +11,7 @@ interface Props {
 
 const { lang } = Astro.props;
 const t = content[lang];
+const navHref = (key: NavKey) => (key === 'top' ? '#top' : `#${t.ids[key]}`);
 ---
 
 <header class="site-header" data-header>
@@ -28,7 +29,7 @@ const t = content[lang];
         {
           t.nav.map((item) => (
             <li>
-              <a href={`#${t.ids[item.key]}`} data-nav-link>
+              <a href={navHref(item.key)} data-nav-link>
                 {item.label}
               </a>
             </li>
@@ -64,7 +65,7 @@ const t = content[lang];
       {
         t.nav.map((item, index) => (
           <li>
-            <a href={`#${t.ids[item.key]}`}>
+            <a href={navHref(item.key)}>
               <span class="mm-num">{pad(index + 1)}</span>
               <span class="line">
                 <span class="line-inner">{item.label}</span>
