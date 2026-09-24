@@ -8,7 +8,7 @@
  * indexable and ship a CNAME; on a preview URL (GitHub Pages project path) they must be noindex
  * and must not ship a CNAME.
  */
-import { access, readFile } from 'node:fs/promises';
+import { access, readFile, readdir } from 'node:fs/promises';
 
 const PRODUCTION_ORIGIN = 'https://kobya.av.tr';
 const PRODUCTION_HOST = new URL(PRODUCTION_ORIGIN).host;
@@ -22,13 +22,26 @@ const SITE = `${ORIGIN}${BASE}`;
 const PRODUCTION = requested.host === PRODUCTION_HOST && BASE === '';
 
 const dist = new URL('../dist/', import.meta.url);
-const pages = [
-  { file: 'index.html', url: `${SITE}/`, lang: 'tr' },
-  { file: 'en/index.html', url: `${SITE}/en/`, lang: 'en' },
-];
+
+/*
+ * Every built page, discovered from dist/, so each new question page is checked without anyone
+ * remembering to add it here. The home pages are held to the stricter rules: they are the only
+ * ones that must carry the full hreflang set and a title within the recommended length.
+ */
+const pages = (await readdir(dist, { recursive: true }))
+  .map((entry) => entry.split('\\').join('/'))
+  .filter((entry) => entry.endsWith('index.html'))
+  .map((file) => {
+    const path = file.slice(0, -'index.html'.length);
+    return { file, url: `${SITE}/${path}`, lang: path.startsWith('en/') ? 'en' : 'tr', home: path === '' || path === 'en/' };
+  })
+  .sort((a, b) => a.url.localeCompare(b.url));
 
 const errors = [];
 const warnings = [];
+
+const homePages = pages.filter((page) => page.home);
+if (homePages.length !== 2) errors.push(`expected two home pages, found ${homePages.length}`);
 
 /** Maps a URL path on the site ("/kobya.av.tr/og.jpg") to a path inside dist/ ("og.jpg"). */
 const toDistPath = (path) => (BASE && path.startsWith(`${BASE}/`) ? path.slice(BASE.length) : path).replace(/^\//, '');
@@ -79,14 +92,19 @@ for (const page of pages) {
   const htmlLang = tags(html, 'html')[0]?.lang;
   if (htmlLang !== page.lang) error(`<html lang> is "${htmlLang}", expected "${page.lang}"`);
 
+  // A question page's title is the question itself, so it is only held to the upper bound.
+  const [minTitle, maxTitle] = page.home ? [30, 65] : [20, 80];
+  const [minDescription, maxDescription] = page.home ? [70, 160] : [50, 160];
+
   const titles = [...html.matchAll(/<title>([^<]*)<\/title>/g)].map((m) => decode(m[1]));
   if (titles.length !== 1) error(`expected one <title>, found ${titles.length}`);
-  else if (titles[0].length < 30 || titles[0].length > 65) warn(`title is ${titles[0].length} chars (aim for 30–65)`);
+  else if (titles[0].length < minTitle || titles[0].length > maxTitle)
+    warn(`title is ${titles[0].length} chars (aim for ${minTitle}–${maxTitle})`);
 
   const description = meta(html, 'name', 'description');
   if (!description) error('missing meta description');
-  else if (description.length < 70 || description.length > 160)
-    warn(`meta description is ${description.length} chars (aim for 70–160)`);
+  else if (description.length < minDescription || description.length > maxDescription)
+    warn(`meta description is ${description.length} chars (aim for ${minDescription}–${maxDescription})`);
 
   const robots = meta(html, 'name', 'robots') ?? '';
   if (PRODUCTION && /noindex|nofollow/.test(robots)) error(`robots meta blocks indexing: "${robots}"`);
@@ -99,10 +117,22 @@ for (const page of pages) {
   const alternates = Object.fromEntries(
     links.filter((link) => link.rel === 'alternate' && link.hreflang).map((link) => [link.hreflang, link.href]),
   );
-  for (const other of pages) {
-    if (alternates[other.lang] !== other.url) error(`hreflang="${other.lang}" should point to ${other.url}`);
+  if (page.home) {
+    for (const other of homePages) {
+      if (alternates[other.lang] !== other.url) error(`hreflang="${other.lang}" should point to ${other.url}`);
+    }
+    if (alternates['x-default'] !== `${SITE}/`) error('x-default hreflang should point to the Turkish home page');
+  } else {
+    /*
+     * A question exists in Turkish and, only if it has been translated, in English. Each page
+     * therefore declares itself plus whichever other language it really has, and nothing else.
+     */
+    if (alternates[page.lang] !== page.url) error(`missing self-referencing hreflang="${page.lang}"`);
+    for (const [code, href] of Object.entries(alternates)) {
+      if (!href.startsWith(`${SITE}/`)) error(`hreflang="${code}" leaves the site: ${href}`);
+      else if (!(await exists(new URL(href).pathname))) error(`hreflang="${code}" points to a page that was not built: ${href}`);
+    }
   }
-  if (alternates['x-default'] !== pages[0].url) error('x-default hreflang should point to the Turkish home page');
 
   for (const link of links) {
     if (!link.href?.startsWith('/') || link.href.startsWith('//')) continue;
@@ -145,8 +175,12 @@ for (const page of pages) {
     }
     const graph = data['@graph'] ?? [data];
     const types = graph.flatMap(typesOf);
-    for (const type of ['WebSite', 'WebPage', 'LegalService', 'Person']) {
+    for (const type of ['WebSite', 'LegalService', 'Person']) {
       if (!types.includes(type)) error(`JSON-LD is missing a ${type} node`);
+    }
+    // The page node is a WebPage or one of its subtypes (QAPage on a question, CollectionPage on the list).
+    if (!types.some((type) => /^(WebPage|CollectionPage|QAPage|FAQPage|ItemPage|AboutPage|ContactPage)$/.test(type))) {
+      error('JSON-LD is missing a WebPage node');
     }
     const office = graph.find((node) => typesOf(node).includes('LegalService'));
     for (const key of ['name', 'url', 'image', 'telephone', 'email', 'address', 'geo', 'openingHoursSpecification', 'founder']) {

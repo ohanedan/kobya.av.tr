@@ -2,21 +2,23 @@
 import Monogram from './Monogram.astro';
 import { content, type Lang, type NavKey } from '../i18n/content';
 import { firm, links, resources } from '../data/firm';
+import { navHref } from '../lib/nav';
 
 interface Props {
   lang: Lang;
+  /** The navigation entry the visitor is on, where that is a page of its own. */
+  current?: NavKey;
 }
 
-const { lang } = Astro.props;
+const { lang, current } = Astro.props;
 const t = content[lang];
 const year = new Date().getFullYear();
-const navHref = (key: NavKey) => (key === 'top' ? '#top' : `#${t.ids[key]}`);
 ---
 
 <footer class="site-footer">
   <div class="container">
     <div class="footer-top">
-      <a class="brand" href="#top">
+      <a class="brand" href={navHref(lang, 'top')}>
         <Monogram class="brand-mark" />
         <span class="brand-text">
           <span class="brand-name">Kobya</span>
@@ -28,7 +30,9 @@ const navHref = (key: NavKey) => (key === 'top' ? '#top' : `#${t.ids[key]}`);
           {
             t.nav.map((item) => (
               <li>
-                <a href={navHref(item.key)}>{item.label}</a>
+                <a href={navHref(lang, item.key)} aria-current={item.key === current ? 'page' : undefined}>
+                  {item.label}
+                </a>
               </li>
             ))
           }

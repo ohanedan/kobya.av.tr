@@ -1,0 +1,124 @@
+---
+/**
+ * The question index: every published question, newest first. In English, a question that has no
+ * translation yet still appears here, marked as Turkish-only and linking to the Turkish page.
+ */
+import Header from './Header.astro';
+import Footer from './Footer.astro';
+import Lines from './Lines.astro';
+import Base from '../layouts/Base.astro';
+import { content, type Lang } from '../i18n/content';
+import { formatDate, getQuestions } from '../lib/questions';
+import { firm } from '../data/firm';
+import { pad } from '../lib/text';
+import { withBase } from '../lib/paths';
+import { homePath } from '../lib/nav';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = content[lang];
+const questions = await getQuestions(lang);
+
+const paths = { tr: withBase(content.tr.questions.path), en: withBase(content.en.questions.path) };
+const site = Astro.site ?? new URL(firm.url);
+const absolute = (path: string) => new URL(path, site).href;
+const pageUrl = absolute(paths[lang]);
+
+const graph = [
+  {
+    '@type': 'ItemList',
+    '@id': `${pageUrl}#list`,
+    name: t.nav.find((item) => item.key === 'questions')?.label,
+    numberOfItems: questions.length,
+    itemListElement: questions.map((question, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      url: absolute(question.path),
+      name: question.question,
+    })),
+  },
+  {
+    '@type': 'BreadcrumbList',
+    '@id': `${pageUrl}#breadcrumb`,
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: t.questions.backHome, item: absolute(homePath(lang)) },
+      { '@type': 'ListItem', position: 2, name: t.questions.all, item: pageUrl },
+    ],
+  },
+];
+---
+
+<Base
+  lang={lang}
+  title={t.questions.meta.title}
+  description={t.questions.meta.description}
+  paths={paths}
+  pageType="CollectionPage"
+  mainEntityId={`${pageUrl}#list`}
+  graph={graph}
+>
+  <a class="skip-link" href="#main">{t.skip}</a>
+  <Header lang={lang} current="questions" langPaths={paths} />
+
+  <main id="main">
+    <section class="section section-dark qa-head" id="top">
+      <div class="grain" aria-hidden="true"></div>
+      <div class="container">
+        <nav class="qa-crumbs" aria-label="Breadcrumb">
+          <a href={homePath(lang)}>{t.questions.backHome}</a>
+        </nav>
+        <h1 class="section-title qa-title" data-lines><Lines lines={t.questions.titleLines} /></h1>
+        <p class="qa-intro" data-hero-rise>{t.questions.intro}</p>
+      </div>
+    </section>
+
+    <section class="section section-light qa-list-section">
+      <div class="container">
+        {questions.length === 0 && <p class="qa-empty">{t.questions.empty}</p>}
+        <ol class="qa-list" data-stagger>
+          {
+            questions.map((question, index) => (
+              <li class="qa-item" data-stagger-item>
+                <a
+                  class="qa-link"
+                  href={question.path}
+                  hreflang={question.translated ? undefined : 'tr'}
+                  lang={question.translated ? undefined : 'tr'}
+                >
+                  <span class="qa-num">{pad(index + 1)}</span>
+                  <div class="qa-text">
+                    <h2 class="qa-question">{question.question}</h2>
+                    <p class="qa-summary">{question.summary}</p>
+                    <div class="qa-meta">
+                      <time datetime={question.date.toISOString().slice(0, 10)}>
+                        {formatDate(question.date, question.copyLang)}
+                      </time>
+                      {question.tags.map((tag) => (
+                        <span class="qa-tag">{tag}</span>
+                      ))}
+                      {!question.translated && <span class="qa-only">{t.questions.turkishOnly}</span>}
+                    </div>
+                  </div>
+                  <span class="qa-arrow" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+                      <path d="M5 12h14M13 6l6 6-6 6" />
+                    </svg>
+                  </span>
+                </a>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </section>
+  </main>
+
+  <Footer lang={lang} current="questions" />
+</Base>
+
+<script>
+  import '../scripts/main';
+</script>

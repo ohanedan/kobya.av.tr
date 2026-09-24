@@ -14,9 +14,21 @@ interface Props {
   description?: string;
   /** For utility pages (404): noindex, and no canonical, hreflang or structured data. */
   noindex?: boolean;
+  /**
+   * Path of this page per language, base path included (use withBase), for the canonical and
+   * the hreflang set. A language left out gets no hreflang, which a question without an English
+   * translation needs. Defaults to the two home pages.
+   */
+  paths?: Partial<Record<Lang, string>>;
+  /** Overrides the @type of the page node: QAPage for a question, CollectionPage for a list. */
+  pageType?: string;
+  /** Extra JSON-LD nodes appended to the graph. */
+  graph?: Record<string, unknown>[];
+  /** What the page is mainly about; defaults to the office. A question page points at its Question. */
+  mainEntityId?: string;
 }
 
-const { lang, noindex = false } = Astro.props;
+const { lang, noindex = false, pageType = 'WebPage', graph = [] } = Astro.props;
 const t = content[lang];
 const title = Astro.props.title ?? t.meta.title;
 const description = Astro.props.description ?? t.meta.description;
@@ -25,8 +37,14 @@ const site = Astro.site ?? new URL(firm.url);
 const absolute = (path: string) => new URL(withBase(path), site).href;
 // Preview builds (GitHub Pages project URL) are kept out of search indexes.
 const indexable = !noindex && isProductionSite(Astro.site);
+/* The home pages anchor the shared entity @ids, whatever page is being rendered. */
 const urls = { tr: absolute('/'), en: absolute('/en/') };
-const pageUrl = urls[lang];
+/* Paths arrive base-aware (built with withBase), so they only need the origin in front. */
+const paths = Astro.props.paths ?? { tr: withBase('/'), en: withBase('/en/') };
+const alternates = (Object.entries(paths) as [Lang, string | undefined][])
+  .filter((entry): entry is [Lang, string] => !!entry[1])
+  .map(([code, path]) => [code, new URL(path, site).href] as const);
+const pageUrl = Object.fromEntries(alternates)[lang] ?? urls[lang];
 const ogImage = absolute(lang === 'tr' ? '/og.jpg' : '/og-en.jpg');
 const htmlLang = lang === 'tr' ? 'tr-TR' : 'en-US';
 
@@ -49,7 +67,7 @@ const people = t.team.members.map((member) => ({
   '@id': personId(member.key),
   name: member.name,
   jobTitle: member.role,
-  url: `${pageUrl}#${t.ids.team}`,
+  url: `${urls[lang]}#${t.ids.team}`,
   worksFor: { '@id': id.office },
   ...(profiles[member.key] ? { sameAs: [profiles[member.key]] } : {}),
   ...(member.key === 'vedat'
@@ -75,7 +93,7 @@ const jsonLd = {
       publisher: { '@id': id.office },
     },
     {
-      '@type': 'WebPage',
+      '@type': pageType,
       '@id': id.webpage,
       url: pageUrl,
       name: title,
@@ -83,7 +101,7 @@ const jsonLd = {
       inLanguage: htmlLang,
       isPartOf: { '@id': id.website },
       about: { '@id': id.office },
-      mainEntity: { '@id': id.office },
+      mainEntity: { '@id': Astro.props.mainEntityId ?? id.office },
       primaryImageOfPage: { '@type': 'ImageObject', url: ogImage, width: 1200, height: 630 },
       dateModified: new Date().toISOString(),
     },
@@ -92,8 +110,8 @@ const jsonLd = {
       '@id': id.office,
       name: t.brand,
       alternateName: lang === 'tr' ? firm.nameEn : firm.name,
-      description,
-      url: pageUrl,
+      description: t.meta.description,
+      url: urls[lang],
       logo: { '@type': 'ImageObject', url: absolute('/icon-512.png'), width: 512, height: 512 },
       image: ogImage,
       telephone: firm.phone.tel,
@@ -143,6 +161,7 @@ const jsonLd = {
       },
     },
     ...people,
+    ...graph,
   ],
 };
 ---
@@ -171,9 +190,8 @@ const jsonLd = {
       !noindex && (
         <>
           <link rel="canonical" href={pageUrl} />
-          <link rel="alternate" hreflang="tr" href={urls.tr} />
-          <link rel="alternate" hreflang="en" href={urls.en} />
-          <link rel="alternate" hreflang="x-default" href={urls.tr} />
+          {alternates.map(([code, href]) => <link rel="alternate" hreflang={code} href={href} />)}
+          <link rel="alternate" hreflang="x-default" href={Object.fromEntries(alternates).tr ?? pageUrl} />
           <link rel="sitemap" type="application/xml" href={withBase('/sitemap-index.xml')} />
 
           <meta name="author" content={t.brand} />

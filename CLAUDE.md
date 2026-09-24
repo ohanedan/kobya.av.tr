@@ -35,7 +35,9 @@ These come from the client or from law. Do not change them without an explicit r
 7. **English copy uses no gendered pronouns** for any team member. Use the name or the surname.
 8. **English for all code, comments and documentation.** Conversation with the maintainer happens in
    Turkish, but the repo is English. Only the page copy in `src/i18n/content.ts` is bilingual.
-9. **Single page.** Do not split into sub-pages unless asked (see "Open items").
+9. **Single page, with one exception.** The home page stays one page. The agreed exception is the
+   question-and-answer area (`/sorular/`, `/en/questions/`), where every question is its own page
+   so it can be indexed separately. Do not add further sub-pages unless asked.
 10. **Licensing.** The repo is public under the custom, bilingual **Kobya Attribution License 1.0**
    (`LICENSE`). It is source-available rather than OSI open source. The **licensor and copyright
    holder is Av. Vedat Murathan Kobya**, not the maintainer. Attribution notices name the attorney.
@@ -77,7 +79,9 @@ Scripts that drive a browser use Edge on Windows and Chrome elsewhere. Override 
 
 ```
 astro.config.mjs          site/base from SITE_URL + BASE_PATH, i18n routing, Fonts API, sitemap, CNAME writer
+content/questions/        one YAML file per question (+ images/), written by the attorney
 src/
+  content.config.ts       the questions collection: its schema and the glob loader
   data/firm.ts            NAP, geo, opening hours, bar, education, LinkedIn URLs, footer resources
   data/seo.ts             optional search-engine verification meta tokens
   i18n/content.ts         all copy (TR + EN), section ids per language, practice areas
@@ -88,14 +92,22 @@ src/
     Practice, Team (emblem + three people), Approach (horizontal pin),
     Contact (channels, hours, map facade), Footer (links + practice statement)
     Monogram, Lines (masked line reveals)
+  components/
+    QuestionList.astro    the question index (both languages)
+    QuestionArticle.astro one question's page (both languages)
   pages/
     index.astro, en/index.astro, 404.astro (noindex)
+    sorular/index.astro, sorular/[slug].astro          Turkish questions
+    en/questions/index.astro, en/questions/[slug].astro English questions
     llms.txt.ts           generates /llms.txt from firm.ts and content.ts
     robots.txt.ts         generates /robots.txt with a base-aware sitemap URL
   scripts/main.ts         all client-side behaviour
   styles/global.css       design tokens and all styles (no scoped component styles)
   lib/text.ts             *emphasis* markers and zero-padded numbers
   lib/paths.ts            withBase() for every internal URL; isProductionSite()
+  lib/nav.ts              navHref(): full, base-aware hrefs, since the header renders on every page
+  lib/questions.ts        the question collection flattened per language
+  lib/richtext.ts         the small text format the YAML answers are written in
 public/                   site.webmanifest (relative icon paths), favicons, icons, og images
 scripts/
   generate-images.mjs     renders OG images and icons with the real fonts
@@ -120,6 +132,41 @@ LICENSE                   Kobya Attribution License 1.0 (English + Turkish; Turk
 - **Title and description limits:** titles should be 30–65 characters and descriptions 70–160.
   `check:seo` warns outside those ranges.
 - **After changing brand text** used in the OG images, run `npm run images`.
+
+## Questions (soru-cevap)
+
+The only part of the site the attorney maintains alone. The brief: a frequently-asked-questions
+area — **never called a blog** — where each question is a separately indexable page, added by
+committing a YAML file through the GitHub web interface.
+
+- **Content:** `content/questions/*.yml`, images in `content/questions/images/`. The file name is
+  the Turkish slug and therefore the URL. `content/questions/README.md` is the author-facing guide
+  and is the one Turkish document in the repo, because its reader is the attorney.
+- **Schema:** `src/content.config.ts`. Required: `question`, `summary`, `date`, `answer`.
+  Optional: `tags`, `image` + `imageAlt`, `contact` (the contact block under the answer, on by
+  default), `draft`, and `en` (question, summary, answer, optional tags and `slug`).
+- **Turkish is the source language.** A question without an `en` block is not published in English;
+  it still appears in the English list, marked "available in Turkish only" and linking to the
+  Turkish page. Do not machine-translate answers.
+- **Answer format** (`src/lib/richtext.ts`): blank line = paragraph, `- ` = bullet (items may wrap),
+  `*word*` = brass italic, `[text](url)` = link (http, https, mailto, tel only). Everything is
+  escaped first. It is deliberately not Markdown: the rules have to fit on one screen for the author.
+- **URLs:** `/sorular/<slug>/` and `/en/questions/<slug>/`. Because the path segment differs per
+  language, `@astrojs/sitemap` cannot pair them and emits no alternates for these pages; the
+  `<link rel="alternate" hreflang>` tags in the HTML carry the pairing, which is what search engines
+  read. Do not "fix" this by giving both languages the same path.
+- **Structured data:** a question page is a `QAPage` whose `mainEntity` is a `Question` with an
+  `acceptedAnswer`; the index is a `CollectionPage` with an `ItemList`. Both add a `BreadcrumbList`.
+  `Base.astro` takes `paths`, `pageType`, `mainEntityId` and `graph` for this.
+- **Navigation:** the header renders on these pages too, so every nav href is a full base-aware path
+  (`/#iletisim`), built by `navHref()`. `main.ts` turns a link that points at the current document
+  into a smooth in-page scroll. The language switch receives explicit targets (`langPaths`), so it
+  stays on the same question instead of dropping the visitor on the home page.
+- **Images** go through `astro:assets`, so they are resized to WebP with intrinsic width and height
+  (no layout shift). `imageAlt` is required whenever an image is used.
+- **The answers are legal copy.** The advertising ban applies in full (hard rule 1), and the texts
+  must come from the attorney. The three questions currently in the repo were drafted as examples
+  and still need the attorney's confirmation.
 
 ## Design system
 
@@ -163,7 +210,9 @@ LICENSE                   Kobya Attribution License 1.0 (English + Turkish; Turk
   - A ResizeObserver on `<main>` debounces `ScrollTrigger.refresh()`, which covers accordion height
     changes and font swaps.
 - **Navigation:** in-page anchors go through `scrollToTarget()` (Lenis-aware) and move focus to the
-  target. The header hides while scrolling down.
+  target. The header never hides: it is the only way between sections, so it stays on screen at
+  every scroll position and only condenses (88 px → 70 px) and takes its translucent background
+  once the page has moved. Do not reintroduce a hide-on-scroll header (client request, 2026-09-24).
 - **Map facade:** clicking injects the Google Maps iframe. Nothing Google-related loads before that.
 
 ## SEO: what is implemented
@@ -305,7 +354,8 @@ Local search ("Gölbaşı avukat", "Ankara avukat") is driven mostly by these:
 Before calling a change done:
 
 1. Run `npm run build && npm run check:seo`.
-2. Run `npm run preview`, then `npm run test:smoke`.
+2. Run `npm run preview`, then `npm run test:smoke`. Astro's preview binds to `localhost`; if the
+   smoke test reports no server, run it with `SMOKE_URL=http://localhost:4321`.
 3. For visual changes, capture screenshots at 1440 px and 390 px and look at them. Also check with
    reduced motion, where everything is static.
 4. For performance or SEO changes, run Lighthouse against the preview:
@@ -392,6 +442,34 @@ Before calling a change done:
   said `noindex, nofollow` with an `http://` canonical, because `configure-pages` had reported the
   http origin. The production check now matches on host and forces https (see "Deployment"). Verified
   by building with `SITE_URL=http://kobya.av.tr`, with the default, and with the github.io preview.
+- **2026-09-24, client revision round two:**
+  - The footer resource list lost Gelincik Projesi.
+  - The e-mail moved from the Gmail address to `murathan.kobya@kobya.av.tr`.
+  - The hero headline reads "Münakaşadan müzakereye"; the English one is unchanged.
+  - Body copy is justified where the client asked for it: the hero lead, practice-area
+    descriptions, team biographies, approach steps and the Serbest Avukat Beyanı. The single rule
+    lives in the primitives block and keeps `hyphens: auto`, without which the narrow columns tear
+    open. Chromium has no Turkish hyphenation dictionary, so phone-width columns still show wide
+    word gaps; left as asked.
+  - The client could not get back to the navigation after jumping into a section. A fixed shortcut
+    rail on the right edge was built first and then removed the same day: the client found it too
+    easy to miss. The header is permanently visible instead, which also fixes it on phones, where
+    the rail would not have appeared at all.
+  - The smoke test now ignores console errors from other origins, because Google's map iframe logs
+    its own network failures once the facade is clicked.
+
+- **2026-09-24, questions area:** the client asked for "a blog that is not called a blog": a
+  question-and-answer area where each question is indexed separately, so the site has more entry
+  points in search. Decisions:
+  - Content lives in `content/questions/*.yml` (English field names, Turkish copy) because the
+    attorney has to be able to add a question from the GitHub web interface. The site parses the
+    folder at build time; nothing else to do after committing a file.
+  - English is optional per question, since requiring it would double the attorney's work.
+  - Every question page ends with a contact block that the YAML can switch off per question.
+  - The answers are written as a tiny text format rather than Markdown, to keep the author's rules
+    short and the output escaped.
+  - `check:seo` now discovers pages from `dist/` instead of a hard-coded list, so every new question
+    is covered by the SEO gate automatically.
 
 ## Open items and ideas
 
@@ -399,7 +477,10 @@ Before calling a change done:
   such a text would be informational only; decide with the maintainer where it should live.
 - **Practice-area sub-pages** (e.g. `/icra-iflas-hukuku/`) would be the next big organic-search
   lever, but they contradict the single-page brief. Ask before doing this.
-- **An FAQ section** would help long-tail and AI-answer visibility, but it needs real answers from the
-  attorney (online meetings? fees policy wording?). Do not invent them.
-- **A domain e-mail** (`info@kobya.av.tr`) through Cloudflare Email Routing is optional. If adopted,
-  update `firm.ts`, the Google Business Profile and LinkedIn together.
+- **Question texts:** the three questions in `content/questions/` are drafts written to show the
+  mechanism. The attorney has to confirm or replace them, and writes every further question.
+- **Per-question OG images** would make shared links look better than the generic `og.jpg`;
+  `scripts/generate-images.mjs` could render one per question if this ever matters.
+- **A domain e-mail:** the site now publishes `murathan.kobya@kobya.av.tr`, so the mailbox has to
+  exist — set up Cloudflare Email Routing for the domain. Keep `firm.ts`, the Google Business
+  Profile and LinkedIn in step.

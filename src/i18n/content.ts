@@ -2,8 +2,11 @@ import { firm } from '../data/firm';
 
 export type Lang = 'tr' | 'en';
 export type SectionKey = 'office' | 'practice' | 'team' | 'approach' | 'contact';
-/** Navigation targets: "top" is the hero, everything else is a section id. */
-export type NavKey = 'top' | SectionKey;
+/**
+ * Navigation targets: "top" is the hero and the other section keys are ids on the home page,
+ * while "questions" is the only entry that leads to a page of its own.
+ */
+export type NavKey = 'top' | SectionKey | 'questions';
 
 /*
  * All site copy, per language. Wrapping a word in `*asterisks*` renders it as a brass italic accent.
@@ -39,6 +42,7 @@ const tr = {
     { key: 'top', label: 'Anasayfa' },
     { key: 'practice', label: 'Çalışma Alanları' },
     { key: 'team', label: 'Ekibimiz' },
+    { key: 'questions', label: 'Sorular' },
     { key: 'contact', label: 'İletişim' },
   ] as { key: NavKey; label: string }[],
   header: {
@@ -50,7 +54,7 @@ const tr = {
     langLabel: 'Dil seçimi',
   },
   hero: {
-    titleLines: ['Münakaşadan', '*müzakere*'],
+    titleLines: ['Münakaşadan', '*müzakereye*'],
     lead: 'Ankara’da faaliyet gösteren Kobya Hukuk Bürosu, müvekkillerine; mevzuat uyum danışmanlığından sözleşme süreçlerinin yönetimine, medeni ve ceza hukukundan icra-iflas hukukuna uzanan geniş bir yelpazede; KVKK danışmanlığı, sözleşmelerin hazırlanması ve müzakeresi, iş hukuku alanında danışmanlık, ticari uyuşmazlıklar ile dava ve tahkim, fikri mülkiyet ve rekabet hukuku, gayrimenkul-kira ve icra-tahsilat süreçleri ile tüketici hukuku ve e-ticaret uyumu başta olmak üzere pek çok alanda güvenilir ve etkin hukuki destek sağlamaktadır.',
     cta: 'İletişime geçin',
   },
@@ -180,6 +184,37 @@ const tr = {
       frameTitle: 'Kobya Hukuk Bürosu konumu',
     },
   },
+  /*
+   * The question-and-answer area. The questions themselves live in content/questions/ as YAML, so
+   * the attorney can publish one without touching the code; this block is only the frame around
+   * them. It is never called a blog.
+   */
+  questions: {
+    /** Path of the index page, per language. Both are also the URL prefix of every question. */
+    path: '/sorular/',
+    meta: {
+      title: 'Sorular | Kobya Hukuk Bürosu – Ankara',
+      description:
+        'Kobya Hukuk Bürosu’na sık sorulan sorular ve bilgilendirici cevapları: randevu ve vekaletname süreçleri, belgeler, dava ve icra takibi hakkında merak edilenler.',
+    },
+    titleLines: ['Sık sorulan', '*sorular*'],
+    intro:
+      'Büroya en çok ulaşan sorular ve bilgilendirici cevapları. Metinler genel niteliktedir; somut bir olay için avukata danışılması gerekir.',
+    empty: 'Sorular hazırlanıyor.',
+    readMore: 'Cevabı okuyun',
+    all: 'Tüm sorular',
+    related: 'Diğer sorular',
+    dateLabel: 'Güncellenme',
+    tagsLabel: 'Etiketler',
+    turkishOnly: 'Bu sorunun cevabı yalnızca Türkçe.',
+    turkishOnlyAction: 'Türkçe cevabı görün',
+    backHome: 'Anasayfa',
+    cta: {
+      title: 'Sorunuz burada yok mu?',
+      text: 'Durumunuza özgü sorular için büroya doğrudan ulaşabilirsiniz. Görüşmeler randevu ile yapılır.',
+      action: 'İletişim bilgileri',
+    },
+  },
   footer: {
     resourcesTitle: 'Diğer Bağlantılar',
     declarationTitle: 'Serbest Avukat Beyanı',
@@ -212,6 +247,7 @@ const en: typeof tr = {
     { key: 'top', label: 'Home' },
     { key: 'practice', label: 'Practice Areas' },
     { key: 'team', label: 'Our Team' },
+    { key: 'questions', label: 'Questions' },
     { key: 'contact', label: 'Contact' },
   ],
   header: {
@@ -353,6 +389,31 @@ const en: typeof tr = {
       open: 'Open in Google Maps',
       notice: 'The map is loaded from Google Maps.',
       frameTitle: 'Kobya Law Office location',
+    },
+  },
+  questions: {
+    path: '/en/questions/',
+    meta: {
+      title: 'Questions | Kobya Law Office – Ankara',
+      description:
+        'Frequently asked questions answered by Kobya Law Office in Ankara: appointments, powers of attorney, documents, litigation and enforcement proceedings.',
+    },
+    titleLines: ['Frequently asked', '*questions*'],
+    intro:
+      'The questions the office is asked most often, answered for information only. Each answer is general; specific matters call for advice from an attorney.',
+    empty: 'Questions are on their way.',
+    readMore: 'Read the answer',
+    all: 'All questions',
+    related: 'Other questions',
+    dateLabel: 'Updated',
+    tagsLabel: 'Tags',
+    turkishOnly: 'This answer is available in Turkish only.',
+    turkishOnlyAction: 'Read it in Turkish',
+    backHome: 'Home',
+    cta: {
+      title: 'Not the question you had?',
+      text: 'For questions about your own situation, please contact the office directly. Meetings are held by appointment.',
+      action: 'Contact details',
     },
   },
   footer: {

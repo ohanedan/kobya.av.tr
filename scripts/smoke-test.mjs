@@ -37,7 +37,14 @@ async function newPage(options) {
   const context = await browser.newContext(options);
   const page = await context.newPage();
   page.on('pageerror', (error) => pageErrors.push(error.message));
-  page.on('console', (message) => message.type() === 'error' && pageErrors.push(message.text()));
+  page.on('console', (message) => {
+    if (message.type() !== 'error') return;
+    // Once the map facade is clicked, Google's own iframe logs its network failures into this
+    // console as well. Only our own scripts are under test, so ignore anything from another origin.
+    const source = message.location()?.url ?? '';
+    if (source && !source.startsWith(base)) return;
+    pageErrors.push(message.text());
+  });
   return { context, page };
 }
 
@@ -47,12 +54,12 @@ try {
     await page.goto(`${base}/`, { waitUntil: 'networkidle' });
     await page.waitForTimeout(3500);
 
-    await page.click('.nav a[href="#calisma-alanlari"]');
+    await page.click('.nav a[href$="#calisma-alanlari"]');
     await page.waitForTimeout(2200);
     check('desktop nav scrolls to the practice section', Math.abs(await topOf(page, 'calisma-alanlari')) < 5);
     check(
       'active nav link follows scroll',
-      await page.evaluate(() => document.querySelector('.nav a.is-active')?.getAttribute('href') === '#calisma-alanlari'),
+      await page.evaluate(() => document.querySelector('.nav a.is-active')?.hash === '#calisma-alanlari'),
     );
 
     await page.click('#area-head-2');
@@ -60,8 +67,8 @@ try {
     check('accordion opens the clicked area', (await page.getAttribute('#area-head-2', 'aria-expanded')) === 'true');
     check('accordion closes the previously open area', (await page.getAttribute('#area-head-0', 'aria-expanded')) === 'false');
 
-    // The header hides while scrolling down, so trigger links programmatically from here on.
-    await page.evaluate(() => document.querySelector('.header-actions [data-lang-link][hreflang="en"]').click());
+    // The header stays on screen at any scroll position, so its links are clickable from here.
+    await page.click('.header-actions [data-lang-link][hreflang="en"]');
     await page.waitForURL('**/en/**');
     await page.waitForTimeout(1500);
     check('language switch keeps the current section', page.url().endsWith('/en/#practice'));
@@ -71,7 +78,7 @@ try {
       await page.evaluate(() => document.documentElement.classList.contains('intro-seen')),
     );
 
-    await page.evaluate(() => document.querySelector('.nav a[href="#contact"]').click());
+    await page.evaluate(() => document.querySelector('.nav a[href$="#contact"]').click());
     await page.waitForTimeout(2000);
     check('Google Maps is not loaded before consent', (await page.locator('[data-map] iframe').count()) === 0);
     await page.click('[data-map-load]');
@@ -81,12 +88,42 @@ try {
   }
 
   {
+    // The questions area: its own pages, generated from content/questions/*.yml.
+    const { context, page } = await newPage({ viewport: { width: 1440, height: 900 } });
+    await page.goto(`${base}/`, { waitUntil: 'networkidle' });
+    await page.waitForTimeout(3500);
+
+    await page.click('.nav a[href$="/sorular/"]');
+    await page.waitForURL('**/sorular/**');
+    await page.waitForTimeout(1200);
+    check('the questions page opens from the navigation', (await page.locator('.qa-list .qa-item').count()) > 0);
+
+    await page.click('.qa-list .qa-item:first-child .qa-link');
+    await page.waitForURL('**/sorular/*/**');
+    await page.waitForTimeout(1500);
+    check('a question has its own page', (await page.locator('h1.qa-headline').count()) === 1);
+    check('the answer is rendered from the YAML', (await page.locator('.qa-body p').count()) > 0);
+    check('the contact block sits under the answer', (await page.locator('.qa-cta').count()) === 1);
+
+    await page.click('.header-actions [data-lang-link][hreflang="en"]');
+    await page.waitForURL('**/en/questions/**');
+    await page.waitForTimeout(1200);
+    check('the language switch stays on the same question', /\/en\/questions\/[^/]+\/$/.test(page.url()));
+
+    await page.click('.nav a[href$="/en/#practice"]');
+    await page.waitForURL('**/en/**');
+    await page.waitForTimeout(1800);
+    check('navigation from a question page lands on the home section', Math.abs(await topOf(page, 'practice')) < 60);
+    await context.close();
+  }
+
+  {
     const { context, page } = await newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
     await page.goto(`${base}/`, { waitUntil: 'networkidle' });
     await page.waitForTimeout(3500);
     await page.click('[data-menu-toggle]');
     await page.waitForTimeout(900);
-    await page.click('#mobile-menu a[href="#ekibimiz"]');
+    await page.click('#mobile-menu a[href$="#ekibimiz"]');
     await page.waitForTimeout(2500);
     check('mobile menu closes after choosing a link', (await page.getAttribute('[data-menu-toggle]', 'aria-expanded')) === 'false');
     check('mobile menu link scrolls to the team section', Math.abs(await topOf(page, 'ekibimiz')) < 5);

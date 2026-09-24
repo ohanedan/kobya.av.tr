@@ -42,10 +42,16 @@ function scrollToTarget(target: HTMLElement | number, immediate = false) {
 }
 
 function initAnchors() {
-  $$<HTMLAnchorElement>('a[href^="#"]').forEach((link) => {
+  /*
+   * Navigation links carry a full path ("/#iletisim") so that they also work from the question
+   * pages, so an in-page jump is recognised by the path rather than by the "#" prefix. Links to
+   * another document are left to the browser.
+   */
+  $$<HTMLAnchorElement>('a[href*="#"]').forEach((link) => {
     link.addEventListener('click', (event) => {
-      const hash = link.getAttribute('href') ?? '';
-      const target = hash.length > 1 ? document.getElementById(decodeURIComponent(hash.slice(1))) : null;
+      const hash = link.hash;
+      const samePage = link.host === location.host && link.pathname === location.pathname;
+      const target = samePage && hash.length > 1 ? document.getElementById(decodeURIComponent(hash.slice(1))) : null;
       if (!target) return;
       event.preventDefault();
       if (menuOpen) setMenu(false);
@@ -73,15 +79,11 @@ function initHeader() {
   const progress = $('[data-progress]');
   if (!header) return;
 
-  let lastY = window.scrollY;
+  // The header stays on screen at every scroll position: it is the only navigation, and a visitor
+  // who jumped into a section needs it to move on without scrolling back to the top. It only
+  // condenses and takes its translucent background once the page has moved.
   const update = (y: number) => {
     header.classList.toggle('is-scrolled', y > 24);
-
-    const delta = y - lastY;
-    if (Math.abs(delta) > 6) {
-      header.classList.toggle('is-hidden', delta > 0 && y > window.innerHeight * 0.7 && !menuOpen);
-      lastY = y;
-    }
 
     if (progress) {
       const max = document.documentElement.scrollHeight - window.innerHeight;
@@ -92,7 +94,6 @@ function initHeader() {
   if (lenis) lenis.on('scroll', (instance: Lenis) => update(instance.scroll));
   else window.addEventListener('scroll', () => update(window.scrollY), { passive: true });
 
-  header.addEventListener('focusin', () => header.classList.remove('is-hidden'));
   update(window.scrollY);
 }
 
@@ -101,7 +102,7 @@ function initActiveSection() {
   const activate = (section: HTMLElement | null) => {
     currentSection = section?.dataset.section ?? null;
     links.forEach((link) => {
-      link.classList.toggle('is-active', !!section && link.getAttribute('href') === `#${section.id}`);
+      link.classList.toggle('is-active', !!section && link.hash === `#${section.id}`);
     });
   };
 
@@ -114,12 +115,14 @@ function initActiveSection() {
     });
   });
 
-  ScrollTrigger.create({
-    trigger: '[data-hero]',
-    start: 'top top',
-    end: 'bottom 55%',
-    onToggle: (self) => self.isActive && activate(null),
-  });
+  if ($('[data-hero]')) {
+    ScrollTrigger.create({
+      trigger: '[data-hero]',
+      start: 'top top',
+      end: 'bottom 55%',
+      onToggle: (self) => self.isActive && activate(null),
+    });
+  }
 }
 
 function initLangLinks() {
@@ -151,7 +154,6 @@ function setMenu(open: boolean) {
     menu.hidden = false;
     void menu.offsetHeight;
     menu.classList.add('is-open');
-    $('[data-header]')?.classList.remove('is-hidden');
     lenis?.stop();
     if (motion) {
       gsap.fromTo(
@@ -189,6 +191,7 @@ function initMenu() {
 /* -------------------------------------------------------------------- intro */
 
 function heroIntro() {
+  if (!$('[data-hero]')) return gsap.timeline();
   return gsap
     .timeline({ defaults: { ease: 'expo.out' } })
     .fromTo('[data-hero-grid] span', { scaleY: 0 }, { scaleY: 1, duration: 1.8, ease: 'expo.inOut', stagger: 0.08 }, 0)
@@ -231,10 +234,12 @@ function initIntro() {
 /* ------------------------------------------------------------ scroll motion */
 
 function initScrollMotion() {
-  // Hero drifts away as the page scrolls.
-  const heroScroll = { trigger: '[data-hero]', start: 'top top', end: 'bottom top', scrub: true };
-  gsap.to('[data-hero-inner]', { yPercent: -12, opacity: 0.2, ease: 'none', scrollTrigger: heroScroll });
-  gsap.to('.hero-watermark', { yPercent: 16, ease: 'none', scrollTrigger: heroScroll });
+  // Hero drifts away as the page scrolls. Pages without a hero (the questions) skip this.
+  if ($('[data-hero]')) {
+    const heroScroll = { trigger: '[data-hero]', start: 'top top', end: 'bottom top', scrub: true };
+    gsap.to('[data-hero-inner]', { yPercent: -12, opacity: 0.2, ease: 'none', scrollTrigger: heroScroll });
+    gsap.to('.hero-watermark', { yPercent: 16, ease: 'none', scrollTrigger: heroScroll });
+  }
 
   // Generic fade-up reveals.
   gsap.set('[data-reveal]', { opacity: 0, y: 30 });

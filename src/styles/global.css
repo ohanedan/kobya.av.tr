@@ -177,6 +177,21 @@ em {
   font-style: italic;
 }
 
+/*
+ * Justified body copy, asked for by the client. Every column here is narrow enough that
+ * justification alone would tear holes between the words, so hyphenation stays on; it picks its
+ * dictionary from <html lang>. The last line of a paragraph stays flush left.
+ */
+.hero-lead,
+.qa-body p,
+.practice-body p,
+.member-bio p,
+.step p,
+.footer-declaration p {
+  text-align: justify;
+  hyphens: auto;
+}
+
 .grain {
   position: absolute;
   inset: 0;
@@ -483,7 +498,6 @@ em {
   inset: 0 0 auto;
   z-index: 60;
   color: var(--bone);
-  transition: transform 0.7s var(--ease);
 }
 
 .site-header::before {
@@ -502,8 +516,10 @@ em {
   opacity: 1;
 }
 
-.site-header.is-hidden {
-  transform: translateY(-100%);
+/* The bar never leaves the screen, so it stays translucent while idle and firms up on use. */
+.site-header:hover::before,
+.site-header:focus-within::before {
+  background: rgba(11, 22, 40, 0.9);
 }
 
 .menu-open .site-header::before {
@@ -1711,6 +1727,361 @@ em {
   color: var(--muted-dark);
 }
 
+/* ---------- Questions ---------- */
+
+/*
+ * The question-and-answer area: an index at /sorular/ (/en/questions/) and one page per question,
+ * generated from content/questions/*.yml. It reuses the section rhythm of the home page — a dark
+ * head over a bone body — so the pages read as part of the same site.
+ */
+.qa-head {
+  padding-block: clamp(140px, 16vw, 220px) clamp(56px, 7vw, 90px);
+}
+
+.qa-crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted-dark);
+}
+
+.qa-crumbs a {
+  color: inherit;
+  transition: color 0.4s var(--ease);
+}
+
+.qa-crumbs a:hover {
+  color: var(--brass-light);
+}
+
+.qa-title {
+  max-width: 14ch;
+}
+
+.qa-intro {
+  margin-top: 30px;
+  max-width: 62ch;
+  color: var(--muted-dark);
+}
+
+.qa-headline {
+  margin-top: clamp(20px, 2.6vw, 34px);
+  max-width: 22ch;
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: clamp(2.1rem, 4.6vw, 4rem);
+  line-height: 1.04;
+  letter-spacing: -0.015em;
+}
+
+.qa-lead {
+  margin-top: 24px;
+  max-width: 60ch;
+  color: var(--muted-dark);
+}
+
+.qa-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 18px;
+  margin-top: 28px;
+  font-size: 0.72rem;
+  color: var(--muted-dark);
+}
+
+.section-light .qa-meta {
+  color: var(--muted-light);
+}
+
+.qa-tag {
+  padding: 4px 12px 5px;
+  border: 1px solid var(--line-dark);
+  border-radius: 999px;
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.section-light .qa-tag {
+  border-color: var(--line-light);
+}
+
+.qa-only {
+  color: var(--brass-deep);
+  font-weight: 600;
+}
+
+.section-dark .qa-only {
+  color: var(--brass-light);
+}
+
+/* ---- index ---- */
+
+.qa-empty {
+  color: var(--muted-light);
+}
+
+.qa-list {
+  border-top: 1px solid var(--line-light);
+}
+
+.qa-item {
+  border-bottom: 1px solid var(--line-light);
+}
+
+.qa-link {
+  position: relative;
+  display: grid;
+  grid-template-columns: 56px 1fr 40px;
+  align-items: start;
+  gap: clamp(16px, 2.4vw, 34px);
+  padding-block: clamp(28px, 3.4vw, 44px);
+  color: inherit;
+}
+
+/* The brass sweep of the practice list, so a row answers the pointer the same way. */
+.qa-link::before {
+  content: '';
+  position: absolute;
+  inset: 0 calc(-1 * clamp(14px, 2vw, 28px));
+  background: linear-gradient(90deg, rgba(184, 146, 90, 0.11), rgba(184, 146, 90, 0));
+  opacity: 0;
+  transition: opacity 0.6s var(--ease);
+  pointer-events: none;
+}
+
+.qa-link:hover::before,
+.qa-link:focus-visible::before {
+  opacity: 1;
+}
+
+.qa-num {
+  padding-top: 0.55em;
+  font-family: var(--serif);
+  font-size: 0.85rem;
+  font-variant-numeric: lining-nums;
+  letter-spacing: 0.1em;
+  color: var(--brass-deep);
+}
+
+.qa-question {
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: clamp(1.35rem, 2.4vw, 2rem);
+  line-height: 1.16;
+  letter-spacing: -0.01em;
+  transition: color 0.4s var(--ease);
+}
+
+.qa-link:hover .qa-question,
+.qa-link:focus-visible .qa-question {
+  color: var(--brass-deep);
+}
+
+.qa-summary {
+  margin-top: 12px;
+  max-width: 68ch;
+  font-size: 0.92rem;
+  color: var(--muted-light);
+}
+
+.qa-arrow {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  margin-top: 4px;
+  border: 1px solid var(--line-light);
+  border-radius: 50%;
+  color: var(--brass-deep);
+  transition:
+    transform 0.6s var(--ease),
+    border-color 0.4s var(--ease);
+}
+
+.qa-arrow svg {
+  width: 16px;
+  height: 16px;
+}
+
+.qa-link:hover .qa-arrow,
+.qa-link:focus-visible .qa-arrow {
+  transform: translateX(6px);
+  border-color: var(--brass);
+}
+
+/* ---- one question ---- */
+
+.qa-answer-section {
+  padding-block: clamp(48px, 6vw, 84px) clamp(40px, 5vw, 70px);
+}
+
+.qa-list-section {
+  padding-block: clamp(48px, 6vw, 84px) clamp(80px, 10vw, 140px);
+}
+
+.qa-measure {
+  max-width: 74ch;
+  margin-inline: auto;
+}
+
+.qa-figure {
+  margin-bottom: clamp(32px, 4vw, 54px);
+}
+
+.qa-figure img {
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--line-light);
+}
+
+.qa-figure figcaption {
+  margin-top: 12px;
+  font-size: 0.78rem;
+  color: var(--muted-light);
+}
+
+.qa-body {
+  display: grid;
+  gap: 20px;
+  font-size: 1.02rem;
+  line-height: 1.75;
+  color: #283041;
+}
+
+.qa-body em {
+  font-style: italic;
+  color: var(--brass-deep);
+}
+
+.qa-body a {
+  color: var(--brass-deep);
+  background: linear-gradient(currentColor, currentColor) 0 100% / 100% 1px no-repeat;
+}
+
+.qa-body ul {
+  display: grid;
+  gap: 10px;
+  padding-left: 2px;
+}
+
+.qa-body li {
+  position: relative;
+  padding-left: 26px;
+}
+
+.qa-body li::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 0.72em;
+  width: 12px;
+  height: 1px;
+  background: var(--brass);
+}
+
+.qa-cta {
+  margin-top: clamp(44px, 5.5vw, 76px);
+  padding: clamp(28px, 3.6vw, 44px);
+  border: 1px solid var(--line-light);
+  background:
+    radial-gradient(120% 140% at 100% 0%, rgba(184, 146, 90, 0.12), transparent 62%),
+    var(--bone-2);
+}
+
+.qa-cta h2 {
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: clamp(1.5rem, 2.4vw, 2.1rem);
+  line-height: 1.15;
+}
+
+.qa-cta p {
+  margin-top: 14px;
+  max-width: 54ch;
+  color: var(--muted-light);
+}
+
+.qa-cta-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px 26px;
+  margin-top: 26px;
+}
+
+.qa-cta-actions .btn-pill {
+  border-color: rgba(122, 92, 48, 0.45);
+  color: var(--brass-deep);
+}
+
+.qa-cta-actions .text-link {
+  margin-top: 0;
+}
+
+/* ---- other questions ---- */
+
+.qa-related-section {
+  padding-block: 0 clamp(80px, 10vw, 140px);
+}
+
+.qa-related-section .meta-label {
+  color: var(--brass-deep);
+}
+
+.qa-related {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1px;
+  margin-top: 24px;
+  border-top: 1px solid var(--line-light);
+  background: var(--line-light);
+}
+
+.qa-related li {
+  background: var(--bone);
+}
+
+.qa-related a {
+  display: grid;
+  gap: 16px;
+  align-content: space-between;
+  height: 100%;
+  padding: clamp(22px, 2.6vw, 32px) clamp(18px, 2vw, 26px);
+  color: inherit;
+  transition: background-color 0.5s var(--ease);
+}
+
+.qa-related a:hover,
+.qa-related a:focus-visible {
+  background: var(--bone-2);
+}
+
+.qa-related-question {
+  font-family: var(--serif);
+  font-size: clamp(1.1rem, 1.5vw, 1.3rem);
+  line-height: 1.25;
+}
+
+.qa-related-action {
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--brass-deep);
+}
+
+.qa-back {
+  margin-top: clamp(32px, 4vw, 52px);
+}
+
 /* ---------- Footer ---------- */
 
 .site-footer {
@@ -2034,6 +2405,20 @@ em {
 }
 
 @media (max-width: 640px) {
+  .qa-link {
+    grid-template-columns: 1fr 32px;
+    gap: 14px;
+  }
+
+  .qa-num {
+    display: none;
+  }
+
+  .qa-arrow {
+    width: 32px;
+    height: 32px;
+  }
+
   .hero-bottom {
     grid-template-columns: minmax(0, 1fr);
   }

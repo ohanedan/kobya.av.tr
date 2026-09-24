@@ -1,0 +1,15 @@
+---
+import type { GetStaticPaths } from 'astro';
+import QuestionArticle from '../../components/QuestionArticle.astro';
+import { getQuestionPages, getQuestions } from '../../lib/questions';
+
+export const getStaticPaths = (async () => {
+  const all = await getQuestions('tr');
+  const pages = await getQuestionPages('tr');
+  return pages.map(({ slug, question }) => ({ params: { slug }, props: { question, all } }));
+}) satisfies GetStaticPaths;
+
+const { question, all } = Astro.props;
+---
+
+<QuestionArticle lang="tr" question={question} all={all} />

@@ -40,11 +40,18 @@ npm run dev          # http://localhost:4321
 | --------------------------------------------- | ---------------------------------------------- |
 | Phone, e-mail, address, hours, bar, geo       | [src/data/firm.ts](src/data/firm.ts)           |
 | All copy (TR + EN), practice areas            | [src/i18n/content.ts](src/i18n/content.ts)     |
+| Questions and answers, one page each          | [content/questions/](content/questions/)       |
 | Search-engine verification meta tags          | [src/data/seo.ts](src/data/seo.ts)             |
 | Colours, typography, layout                   | [src/styles/global.css](src/styles/global.css) |
 | Animations and interactions                   | [src/scripts/main.ts](src/scripts/main.ts)     |
 
 Wrapping a word in `*asterisks*` inside the copy renders it as a brass italic accent.
+
+Each YAML file in [content/questions/](content/questions/) becomes its own page under `/sorular/`
+(and `/en/questions/` when it carries an `en` block), listed in the sitemap and marked up as a
+`QAPage`. The fields are documented, in Turkish, in
+[content/questions/README.md](content/questions/README.md), because the attorney adds these files
+through the GitHub web interface.
 
 > **Advertising ban:** Under Turkish Attorneys' Act art. 55 and the TBB advertising regulation, copy
 > must stay informational. Do not add superlatives ("best", "expert"), success rates, testimonials,

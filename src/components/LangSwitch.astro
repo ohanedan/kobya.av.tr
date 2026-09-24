@@ -1,15 +1,23 @@
 ---
 import { content, type Lang } from '../i18n/content';
-import { withBase } from '../lib/paths';
+import { homePath } from '../lib/nav';
 
 interface Props {
   lang: Lang;
+  /**
+   * Where each language button leads, base path included. Defaults to the two home pages, where
+   * the script then appends the section the visitor is looking at; a question page passes its own.
+   */
+  paths?: Record<Lang, string>;
 }
 
-const { lang } = Astro.props;
+const { lang, paths } = Astro.props;
+/* Section mapping only makes sense on the home page, which is the default target. */
+const mapsSections = !paths;
+const targets = paths ?? { tr: homePath('tr'), en: homePath('en') };
 const languages: { code: Lang; href: string; name: string }[] = [
-  { code: 'tr', href: withBase('/'), name: 'Türkçe' },
-  { code: 'en', href: withBase('/en/'), name: 'English' },
+  { code: 'tr', href: targets.tr, name: 'Türkçe' },
+  { code: 'en', href: targets.en, name: 'English' },
 ];
 ---
 
@@ -29,7 +37,7 @@ const languages: { code: Lang; href: string; name: string }[] = [
           aria-label={language.name}
           aria-current={language.code === lang ? 'page' : undefined}
           data-lang-link
-          data-ids={JSON.stringify(content[language.code].ids)}
+          data-ids={mapsSections ? JSON.stringify(content[language.code].ids) : undefined}
         >
           {language.code.toUpperCase()}
         </a>

@@ -1,0 +1,179 @@
+---
+/**
+ * One question's own page: the answer, an optional image, the contact block the YAML can switch
+ * off per question, and links on to the other questions.
+ */
+import { Image } from 'astro:assets';
+import Header from './Header.astro';
+import Footer from './Footer.astro';
+import Base from '../layouts/Base.astro';
+import { content, type Lang } from '../i18n/content';
+import { formatDate, relatedQuestions, type Question } from '../lib/questions';
+import { answerText, renderAnswer } from '../lib/richtext';
+import { firm, links } from '../data/firm';
+import { withBase } from '../lib/paths';
+import { homePath, navHref } from '../lib/nav';
+
+interface Props {
+  lang: Lang;
+  question: Question;
+  /** Every question in this language, for the "other questions" block. */
+  all: Question[];
+}
+
+const { lang, question, all } = Astro.props;
+const t = content[lang];
+const related = relatedQuestions(all, question);
+
+const site = Astro.site ?? new URL(firm.url);
+const absolute = (path: string) => new URL(path, site).href;
+const pageUrl = absolute(question.path);
+const indexPath = withBase(t.questions.path);
+const officeId = `${absolute(withBase('/'))}#office`;
+
+/* Only the languages this question actually exists in get an hreflang. */
+const paths = question.altPath
+  ? lang === 'tr'
+    ? { tr: question.path, en: question.altPath }
+    : { tr: question.altPath, en: question.path }
+  : { [lang]: question.path };
+
+/* The buttons always lead somewhere: without a translation, to the other language's index. */
+const langPaths = {
+  tr: lang === 'tr' ? question.path : (question.altPath ?? withBase(content.tr.questions.path)),
+  en: lang === 'en' ? question.path : (question.altPath ?? withBase(content.en.questions.path)),
+};
+
+const stamp = question.date.toISOString();
+const graph = [
+  {
+    '@type': 'Question',
+    '@id': `${pageUrl}#question`,
+    name: question.question,
+    text: question.question,
+    answerCount: 1,
+    inLanguage: lang === 'tr' ? 'tr-TR' : 'en-US',
+    dateModified: stamp,
+    author: { '@id': officeId },
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: answerText(question.answer),
+      url: pageUrl,
+      dateModified: stamp,
+      author: { '@id': officeId },
+    },
+  },
+  {
+    '@type': 'BreadcrumbList',
+    '@id': `${pageUrl}#breadcrumb`,
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: t.questions.backHome, item: absolute(homePath(lang)) },
+      { '@type': 'ListItem', position: 2, name: t.questions.all, item: absolute(indexPath) },
+      { '@type': 'ListItem', position: 3, name: question.question, item: pageUrl },
+    ],
+  },
+];
+---
+
+<Base
+  lang={lang}
+  title={`${question.question} | ${t.brand}`}
+  description={question.summary}
+  paths={paths}
+  pageType="QAPage"
+  mainEntityId={`${pageUrl}#question`}
+  graph={graph}
+>
+  <a class="skip-link" href="#main">{t.skip}</a>
+  <Header lang={lang} current="questions" langPaths={langPaths} />
+
+  <main id="main">
+    <article>
+      <header class="section section-dark qa-head" id="top">
+        <div class="grain" aria-hidden="true"></div>
+        <div class="container">
+          <nav class="qa-crumbs" aria-label="Breadcrumb">
+            <a href={homePath(lang)}>{t.questions.backHome}</a>
+            <span aria-hidden="true">/</span>
+            <a href={indexPath}>{t.questions.all}</a>
+          </nav>
+          <h1 class="qa-headline">{question.question}</h1>
+          <p class="qa-lead">{question.summary}</p>
+          <div class="qa-meta">
+            <span class="meta-label">{t.questions.dateLabel}</span>
+            <time datetime={stamp.slice(0, 10)}>{formatDate(question.date, lang)}</time>
+            {question.tags.map((tag) => <span class="qa-tag">{tag}</span>)}
+          </div>
+        </div>
+      </header>
+
+      <div class="section section-light qa-answer-section">
+        <div class="container qa-measure">
+          {
+            question.image && (
+              <figure class="qa-figure">
+                <Image src={question.image} alt={question.imageAlt ?? ''} widths={[520, 860, 1200]} loading="eager" />
+                {question.imageAlt && <figcaption>{question.imageAlt}</figcaption>}
+              </figure>
+            )
+          }
+
+          <div class="qa-body" set:html={renderAnswer(question.answer)} />
+
+          {
+            question.contact && (
+              <aside class="qa-cta" data-reveal>
+                <h2>{t.questions.cta.title}</h2>
+                <p>{t.questions.cta.text}</p>
+                <div class="qa-cta-actions">
+                  <a class="btn-pill" href={navHref(lang, 'contact')}>
+                    {t.questions.cta.action}
+                  </a>
+                  <a class="text-link" href={links.tel}>
+                    {firm.phone.display}
+                  </a>
+                  <a class="text-link" href={links.mail}>
+                    {firm.email}
+                  </a>
+                </div>
+              </aside>
+            )
+          }
+        </div>
+      </div>
+
+      {
+        related.length > 0 && (
+          <div class="section section-light qa-related-section">
+            <div class="container">
+              <h2 class="meta-label">{t.questions.related}</h2>
+              <ol class="qa-related" data-stagger>
+                {related.map((item) => (
+                  <li data-stagger-item>
+                    <a
+                      href={item.path}
+                      hreflang={item.translated ? undefined : 'tr'}
+                      lang={item.translated ? undefined : 'tr'}
+                    >
+                      <span class="qa-related-question">{item.question}</span>
+                      <span class="qa-related-action">
+                        {item.translated ? t.questions.readMore : t.questions.turkishOnlyAction}
+                      </span>
+                    </a>
+                  </li>
+                ))}
+              </ol>
+              <a class="text-link qa-back" href={indexPath}>{t.questions.all}</a>
+            </div>
+          </div>
+        )
+      }
+    </article>
+  </main>
+
+  <Footer lang={lang} current="questions" />
+</Base>
+
+<script>
+  import '../scripts/main';
+</script>

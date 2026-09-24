@@ -18,7 +18,7 @@ export const firm = {
   phone: { display: '+90 530 672 06 61', tel: '+905306720661' },
   /** International format without "+" or spaces, as wa.me expects. */
   whatsapp: '905306720661',
-  email: 'murathankobyaa@gmail.com',
+  email: 'murathan.kobya@kobya.av.tr',
 
   /** Personal profiles, shown under each team member's biography. */
   linkedin: {
@@ -62,7 +62,6 @@ export const resources = [
   { label: 'Türkiye Barolar Birliği', url: 'https://www.barobirlik.org.tr' },
   { label: 'Mağdur Bilgi Sistemi', url: 'https://magdurbilgi.adalet.gov.tr' },
   { label: 'Yargıtay İçtihat Merkezi', url: 'https://www.yargitayictihatmerkezi.gov.tr' },
-  { label: 'Gelincik Projesi', url: 'https://www.gelincikprojesi.org.tr' },
 ] as const;
 
 const query = encodeURIComponent(firm.address.mapsQuery);

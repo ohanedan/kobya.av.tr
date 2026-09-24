@@ -4,19 +4,23 @@ import LangSwitch from './LangSwitch.astro';
 import { content, type Lang, type NavKey } from '../i18n/content';
 import { firm, links } from '../data/firm';
 import { pad } from '../lib/text';
+import { navHref } from '../lib/nav';
 
 interface Props {
   lang: Lang;
+  /** The navigation entry the visitor is on, where that is a page of its own. */
+  current?: NavKey;
+  /** Where the language buttons lead from this page; defaults to the two home pages. */
+  langPaths?: Record<Lang, string>;
 }
 
-const { lang } = Astro.props;
+const { lang, current, langPaths } = Astro.props;
 const t = content[lang];
-const navHref = (key: NavKey) => (key === 'top' ? '#top' : `#${t.ids[key]}`);
 ---
 
 <header class="site-header" data-header>
   <div class="container header-inner">
-    <a class="brand" href="#top">
+    <a class="brand" href={navHref(lang, 'top')}>
       <Monogram class="brand-mark" />
       <span class="brand-text">
         <span class="brand-name">Kobya</span>
@@ -29,7 +33,12 @@ const navHref = (key: NavKey) => (key === 'top' ? '#top' : `#${t.ids[key]}`);
         {
           t.nav.map((item) => (
             <li>
-              <a href={navHref(item.key)} data-nav-link>
+              <a
+                href={navHref(lang, item.key)}
+                data-nav-link
+                class:list={{ 'is-active': item.key === current }}
+                aria-current={item.key === current ? 'page' : undefined}
+              >
                 {item.label}
               </a>
             </li>
@@ -39,8 +48,8 @@ const navHref = (key: NavKey) => (key === 'top' ? '#top' : `#${t.ids[key]}`);
     </nav>
 
     <div class="header-actions">
-      <LangSwitch lang={lang} />
-      <a class="btn-pill header-cta" href={`#${t.ids.contact}`}>{t.header.cta}</a>
+      <LangSwitch lang={lang} paths={langPaths} />
+      <a class="btn-pill header-cta" href={navHref(lang, 'contact')}>{t.header.cta}</a>
       <button
         class="menu-toggle"
         type="button"
@@ -65,7 +74,7 @@ const navHref = (key: NavKey) => (key === 'top' ? '#top' : `#${t.ids[key]}`);
       {
         t.nav.map((item, index) => (
           <li>
-            <a href={navHref(item.key)}>
+            <a href={navHref(lang, item.key)} aria-current={item.key === current ? 'page' : undefined}>
               <span class="mm-num">{pad(index + 1)}</span>
               <span class="line">
                 <span class="line-inner">{item.label}</span>
